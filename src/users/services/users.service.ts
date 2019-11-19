@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from '../../models';
 
 @Injectable()
@@ -33,6 +33,15 @@ export class UsersService {
 
   async findAll() {
     return this.users;
+  }
+
+  async findById(id: number): Promise<User | null> {
+    id = parseInt(id as any, 10);
+    const user = this.users.find(u => u.id === id);
+    if (!user) {
+      throw new NotFoundException('User Not Found');
+    }
+    return user;
   }
 
   async findOne(username: string): Promise<User | undefined> {
