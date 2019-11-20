@@ -8,7 +8,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UsersService,
-    ) {}
+  ) { }
 
   @UseGuards(AuthGuard('local'))
   @Post('login')
@@ -24,6 +24,13 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @Get('profile')
   getProfile(@Request() req) {
-    return req.user;
+    return {
+      user: req.user,
+      comments: [
+        { id: 1, text: 'Super artykuł!!!' },
+        { id: 2, text: 'Super!!!' },
+        { id: 3, text: 'Super !!!' },
+      ],
+    };
   }
 }
