@@ -3,7 +3,7 @@ import { User } from '../../models';
 
 @Injectable()
 export class UsersService {
-  private readonly users: User[];
+  private users: User[];
 
   constructor() {
     this.users = [
@@ -50,5 +50,20 @@ export class UsersService {
 
   async register(user: User): Promise<User | undefined> {
     return user;
+  }
+
+  async update(user: User): Promise<User | undefined> {
+    
+    this.users = this.users.map(u => {
+      if (user.id === u.id) {
+        return {
+          ...u,
+          ...user,
+        };
+      }
+      return u;
+    });
+
+    return this.findById(user.id);
   }
 }
