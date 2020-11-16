@@ -1,0 +1,2 @@
+JWT_SECRET=
+TOKEN_HEADER_NAME=api_token

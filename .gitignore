@@ -1,6 +1,9 @@
 # compiled output
 /dist
 /node_modules
+.env
+/assets
+/storage
 
 # Logs
 logs
