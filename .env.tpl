@@ -1,2 +1,2 @@
-JWT_SECRET=
-TOKEN_HEADER_NAME=api_token
+JWT_SECRET=jwt-secret
+TOKEN_HEADER_NAME=Authorization
