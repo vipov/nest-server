@@ -2,9 +2,9 @@ require('dotenv').config();
 
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import {app as expressApp} from '../express/app';
+// import {app as expressApp} from '../express/app';
 import { ExpressAdapter, NestExpressApplication } from '@nestjs/platform-express';
-const expressAdapter = new ExpressAdapter(expressApp);
+// const expressAdapter = new ExpressAdapter(expressApp);
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from './config';
 import { ClassSerializerInterceptor } from '@nestjs/common';
@@ -12,7 +12,7 @@ import { ClassSerializerInterceptor } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule, 
-    expressAdapter
+    // expressAdapter
   );
   
   app.setGlobalPrefix('api');
