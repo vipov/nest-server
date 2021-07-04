@@ -13,7 +13,7 @@ async function bootstrap() {
     AppModule,
     expressAdapter,
   );
-
+  app.setGlobalPrefix('api');
   await app.listen(3000);
 }
 bootstrap();
