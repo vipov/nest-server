@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class QuoteEntity {
   id: number;
-  
+
   @ApiProperty({description: 'Fajny cytat', example: 'Nest jest fajny!'})
   text: string;
 

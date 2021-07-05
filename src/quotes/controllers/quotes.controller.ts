@@ -1,4 +1,6 @@
-import { Body, Controller, Get, HttpException, NotFoundException, Param, Post, Query} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, NotFoundException, Param, Patch, Post, Query} from '@nestjs/common';
+import { ApiParam } from '@nestjs/swagger';
+import { FindQuotesDto, FindQuotesResponseDto } from '../dto';
 import { QuoteEntity } from '../entities';
 import { QuotesService } from '../services';
 
@@ -8,11 +10,12 @@ export class QuotesController {
   constructor(private quoteService: QuotesService) {}
 
   @Get()
-  findQuotes(@Query() query: any = {}) {
+  async findQuotes(@Query() query: FindQuotesDto): Promise<FindQuotesResponseDto> {
     return this.quoteService.find(query.q);
   }
 
   @Get(':id')
+  @ApiParam({name: 'id', type: Number})
   async getQuote(@Param('id') id) {
     id = parseInt(id, 10);
     const quote = await this.quoteService.get(id);
@@ -28,12 +31,16 @@ export class QuotesController {
     return this.quoteService.create(data);
   }
 
-  updateQuote(id, data) {
+  @Patch(':id')
+  @ApiParam({name: 'id', type: Number})
+  async updateQuote(@Param('id') id, @Body() data: QuoteEntity): Promise<QuoteEntity> {
     id = parseInt(id, 10);
     return this.quoteService.update(id, data);
   }
 
-  deleteQuote(id) {
+  @Delete(':id')
+  @ApiParam({name: 'id', type: Number})
+  deleteQuote(@Param('id') id) {
     id = parseInt(id, 10);
     return this.quoteService.delete(id);
   }
