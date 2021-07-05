@@ -14,7 +14,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, expressAdapter);
   
   app.setGlobalPrefix('api');
-
+  
   // const config = new ConfigService();
   const options = new DocumentBuilder()
     .setTitle('Nest API Example')
