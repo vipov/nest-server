@@ -11,7 +11,7 @@ import { UserService } from '../services';
 export class UserByIdPipe implements PipeTransform {
   constructor(private userService: UserService) {}
 
-  async transform(value: any, metadata: ArgumentMetadata) {
+  async transform(value: any) {
     console.log('PIPE: UseById', value);
     const id = parseInt(value, 10);
 
