@@ -3,11 +3,16 @@
   <head>
     <meta charset="utf-8" />
     <title>App</title>
+    <meta>
   </head>
   <body>
     <h1>Nest app | Photos</h1>
     {{#each photos}}
-      <img src="{{this}}">
+      <div>
+        <img src="{{thumbPath}}"><br>
+        <a href="{{downloadPath}}">Download</a>
+
+      </div>
     {{/each}}
   </body>
 </html>

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { resolve } from 'path';
+import { resolve, join, posix } from 'path';
 
 @Injectable()
 export class ConfigService {
@@ -8,8 +8,10 @@ export class ConfigService {
 
   readonly STORAGE_TMP =  resolve(__dirname, '../../storage/tmp');
   readonly STORAGE_PHOTOS =  resolve(__dirname, '../../storage/photos');
-  readonly PHOTOS_BASE_PATH = '/photos';
   readonly STORAGE_THUMBS = resolve(__dirname, '../../storage/assets/photos');
   readonly STORAGE_ASSETS = resolve(__dirname, '../../storage/assets');
+  readonly PHOTOS_DOMAIN = 'http://localhost:3000';
+  readonly PHOTOS_BASE_PATH = [this.PHOTOS_DOMAIN, 'photos'].join('/');
+  readonly PHOTOS_DOWNLOAD_PATH = [this.PHOTOS_DOMAIN, 'api/photos/download'].join('/');
 
 }

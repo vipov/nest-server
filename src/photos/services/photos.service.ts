@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { promisify } from 'util';
 import { rename, readdir } from 'fs';
-import { extname, join } from 'path';
+import { extname, join, posix } from 'path';
 const renameAsync = promisify(rename);
 const readdirAsync = promisify(readdir);
 import * as crypto from 'crypto';
@@ -18,7 +18,11 @@ export class PhotosService {
     const dir = join(this.config.STORAGE_ASSETS, 'photos');
     const files = await readdirAsync(dir);
 
-    return files.map(name => join(this.config.PHOTOS_BASE_PATH, name));
+    return files.map(name => ({
+      filename: name,
+      thumbPath: [this.config.PHOTOS_BASE_PATH, name].join('/'),
+      downloadPath: [this.config.PHOTOS_DOWNLOAD_PATH, name].join('/')
+    }));
   }
 
   async create(file: Express.Multer.File) {
