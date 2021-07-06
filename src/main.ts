@@ -9,6 +9,7 @@ import {
 } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from './config';
+import { join } from 'path';
 
 const expressAdapter = new ExpressAdapter(expressApp);
 
@@ -16,8 +17,15 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, expressAdapter);
   
   app.setGlobalPrefix('api');
+
+  // const config = new ConfigService();
+  const config = app.get(ConfigService);
+
+  app.useStaticAssets(config.STORAGE_ASSETS)
+
+  app.setBaseViewsDir(join(__dirname, 'views'));
+  app.setViewEngine('hbs');
   
-  const config = new ConfigService();
   const options = new DocumentBuilder()
     .setTitle('Nest API Example')
     .setDescription('Przykładowy projekt w Node.js i TypeScript')

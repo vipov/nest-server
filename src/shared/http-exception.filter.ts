@@ -6,11 +6,11 @@ export class TimeoutException extends HttpException {
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: TimeoutException, host: ArgumentsHost) {
+  catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request = ctx.getRequest();
-    const status = exception.getStatus() || 500;
+    const status = exception.status || 500;
 
     console.log('EXCEPTION FILTER', exception.message);
 
@@ -20,8 +20,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
         statusCode: status,
         timestamp: new Date().toISOString(),
         path: request.url,
-        timeout: exception.timeout,
         data: process.env.DEBUG ? exception.message : null ,
+        stack: process.env.DEBUG ? exception.stack : null ,
       });
   }
 }
