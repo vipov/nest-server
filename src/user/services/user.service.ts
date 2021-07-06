@@ -18,7 +18,6 @@ export class UserService {
     return this.users.find(user => user.email === email && user.password === password);
   }
 
-
   async create(data: UserRegisterRequestDto): Promise<UserEntity> {
     
     const user: UserEntity = {
@@ -31,4 +30,10 @@ export class UserService {
     this.users.push(user);
     return user;
   }
+
+  async getById(id: number): Promise<UserEntity | null> {
+    const user = this.users.find(u => u.id === id);
+    return (user) ? new UserEntity(user) : null;
+  }
+  
 }
