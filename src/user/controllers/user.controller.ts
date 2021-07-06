@@ -60,15 +60,15 @@ export class UserController {
   @Get(':id')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(AuthGuard)
-  // @UseInterceptors(UserInterceptor)
+  @UseInterceptors(UserInterceptor)
   @ApiBearerAuth()
   @ApiParam({name: 'id', type: Number})
   async getUserById(@Param('id', UserByIdPipe) user: UserEntity, @User() authUser) {
     console.log('CONTROLLER');
 
-    const err =  new TimeoutException('Testowy wyjątek', 400);
-    err.timeout = 4000;
-    throw err;
+    // const err =  new TimeoutException('Testowy wyjątek', 400);
+    // err.timeout = 4000;
+    // throw err;
 
     return user;
   }
