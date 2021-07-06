@@ -27,7 +27,7 @@ export class UserLoginRequestDto {
   password: string;
 
   @Transform(({ value }) => parseInt(value, 10))
-  marketing: number;
+  marketing?: number;
 }
 
 export class UserLoginResponseDto {

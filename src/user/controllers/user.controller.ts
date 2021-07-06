@@ -61,7 +61,7 @@ export class UserController {
     );
 
     if (!user) {
-      throw new HttpException('ValidationError', HttpStatus.BAD_REQUEST);
+      throw new HttpException('ValidationError', HttpStatus.UNAUTHORIZED);
     }
     return {
       token: await this.authService.tokenSign({ user }),
