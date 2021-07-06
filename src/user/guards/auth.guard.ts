@@ -1,4 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ConfigService } from '../../config';
 import { UserRole } from '../entities';
@@ -6,17 +11,16 @@ import { AuthService } from '../services';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-
   constructor(
     private readonly reflector: Reflector,
     private config: ConfigService,
     private authService: AuthService,
-    ) {}
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    console.log('GUARD: Auth')
+    console.log('GUARD: Auth');
     const request = context.switchToHttp().getRequest();
-    
+
     const token = request.headers[this.config.TOKEN_HEADER_NAME];
 
     if (token) {
@@ -36,9 +40,10 @@ export class AuthGuard implements CanActivate {
     }
 
     const user = request.tokenPayload.user;
-    const hasRole = () => !!user.roles.find(role => !!roles.find(item => item === role));
+    const hasRole = () =>
+      !!user.roles.find((role) => !!roles.find((item) => item === role));
 
-    if(!(user && user.roles && hasRole())) {
+    if (!(user && user.roles && hasRole())) {
       throw new UnauthorizedException();
     }
     return true;

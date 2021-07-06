@@ -1,4 +1,4 @@
-import { Exclude } from "class-transformer";
+import { Exclude } from 'class-transformer';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -8,7 +8,7 @@ export class UserEntity {
   id?: number;
   name: string;
   email?: string;
-  @Exclude({toPlainOnly: true})
+  @Exclude({ toPlainOnly: true })
   password?: string;
   roles?: UserRole[];
 

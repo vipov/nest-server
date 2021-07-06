@@ -14,30 +14,37 @@ import { join } from 'path';
 const expressAdapter = new ExpressAdapter(expressApp);
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, expressAdapter);
-  
+  const app = await NestFactory.create<NestExpressApplication>(
+    AppModule,
+    expressAdapter,
+  );
+
   app.setGlobalPrefix('api');
 
   // const config = new ConfigService();
   const config = app.get(ConfigService);
 
-  app.useStaticAssets(config.STORAGE_ASSETS)
+  app.useStaticAssets(config.STORAGE_ASSETS);
 
   app.setBaseViewsDir(join(__dirname, 'views'));
   app.setViewEngine('hbs');
-  
+
   const options = new DocumentBuilder()
     .setTitle('Nest API Example')
     .setDescription('Przykładowy projekt w Node.js i TypeScript')
     .setVersion('1.0')
     .addTag('user')
-    .addBearerAuth({type: 'apiKey', in: 'header', name: config.TOKEN_HEADER_NAME})
+    .addBearerAuth({
+      type: 'apiKey',
+      in: 'header',
+      name: config.TOKEN_HEADER_NAME,
+    })
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api/docs', app, document, {
     swaggerOptions: {
       persistAuthorization: true,
-    }
+    },
   });
 
   await app.listen(3000);

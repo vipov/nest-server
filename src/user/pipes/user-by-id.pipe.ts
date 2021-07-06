@@ -9,11 +9,10 @@ import { UserService } from '../services';
 
 @Injectable()
 export class UserByIdPipe implements PipeTransform {
-
   constructor(private userService: UserService) {}
 
   async transform(value: any, metadata: ArgumentMetadata) {
-    console.log('PIPE: UseById', value)
+    console.log('PIPE: UseById', value);
     const id = parseInt(value, 10);
 
     if (!id) {

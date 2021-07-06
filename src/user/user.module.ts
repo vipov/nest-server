@@ -11,13 +11,13 @@ import { HttpExceptionFilter } from '../shared/http-exception.filter';
   imports: [ConfigModule],
   controllers: [UserController],
   providers: [
-    UserService, 
+    UserService,
     AuthService,
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
-    }
-  ]
+    },
+  ],
 })
 export class UserModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -5,13 +5,12 @@ import { ConfigService } from '../../config';
 
 @Injectable()
 export class AuthService {
-
   constructor(private config: ConfigService) {}
 
   tokenSign(payload: TokenPayloadEntity): string {
     return jwt.sign(payload, this.config.JWT_SECRET);
   }
-  
+
   tokenDecode(token: string): TokenPayloadEntity | null {
     return jwt.decode(token);
   }

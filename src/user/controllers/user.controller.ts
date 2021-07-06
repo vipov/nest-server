@@ -1,9 +1,29 @@
-import { Body, ClassSerializerInterceptor, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Req, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Post,
+  Req,
+  UseGuards,
+  UseInterceptors,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiCreatedResponse, ApiParam } from '@nestjs/swagger';
 import { TimeoutException } from '../../shared/http-exception.filter';
 import { Roles } from '../decorators/roles.decorator';
 import { User } from '../decorators/user.decorator';
-import { UserRegisterResponseDto, UserRegisterRequestDto, UserLoginRequestDto, UserLoginResponseDto } from '../dto';
+import {
+  UserRegisterResponseDto,
+  UserRegisterRequestDto,
+  UserLoginRequestDto,
+  UserLoginResponseDto,
+} from '../dto';
 import { UserEntity, UserRole } from '../entities';
 import { AuthGuard } from '../guards/auth.guard';
 import { UserInterceptor } from '../interceptors/user.interceptor';
@@ -12,12 +32,11 @@ import { AuthService } from '../services';
 import { UserService } from '../services/user.service';
 
 @Controller('user')
-
 export class UserController {
   constructor(
     private userService: UserService,
     private authService: AuthService,
-    ) {}
+  ) {}
 
   @Post('register')
   @ApiCreatedResponse({ type: UserRegisterResponseDto })
@@ -30,18 +49,22 @@ export class UserController {
       user,
     };
   }
-  
+
   @Post('login')
   @UsePipes(new ValidationPipe({ transform: true }))
-  async login(@Body() credentials: UserLoginRequestDto): Promise<UserLoginResponseDto> {
-
-    const user = await this.userService.findByCredentials(credentials.email, credentials.password);
+  async login(
+    @Body() credentials: UserLoginRequestDto,
+  ): Promise<UserLoginResponseDto> {
+    const user = await this.userService.findByCredentials(
+      credentials.email,
+      credentials.password,
+    );
 
     if (!user) {
       throw new HttpException('ValidationError', HttpStatus.BAD_REQUEST);
     }
     return {
-      token: await this.authService.tokenSign({user}),
+      token: await this.authService.tokenSign({ user }),
       user,
       credentials,
     } as any;
@@ -53,8 +76,8 @@ export class UserController {
   @UseInterceptors(UserInterceptor)
   @ApiBearerAuth()
   getUser(@User() user: UserEntity) {
-    console.log('CONTROLLER: UserController.getUser()')
-    return {user};
+    console.log('CONTROLLER: UserController.getUser()');
+    return { user };
   }
 
   @Get(':id')
@@ -62,8 +85,11 @@ export class UserController {
   @UseGuards(AuthGuard)
   @UseInterceptors(UserInterceptor)
   @ApiBearerAuth()
-  @ApiParam({name: 'id', type: Number})
-  async getUserById(@Param('id', UserByIdPipe) user: UserEntity, @User() authUser) {
+  @ApiParam({ name: 'id', type: Number })
+  async getUserById(
+    @Param('id', UserByIdPipe) user: UserEntity,
+    @User() authUser,
+  ) {
     console.log('CONTROLLER');
 
     // const err =  new TimeoutException('Testowy wyjątek', 400);
@@ -72,5 +98,4 @@ export class UserController {
 
     return user;
   }
-  
 }

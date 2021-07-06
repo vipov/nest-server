@@ -4,7 +4,7 @@ import { UserRole } from '../entities';
 @Injectable()
 export class UserMiddleware implements NestMiddleware {
   use(req, res, next) {
-    console.log('Middleware: ', req.url)
+    console.log('Middleware: ', req.url);
     next();
   }
 }

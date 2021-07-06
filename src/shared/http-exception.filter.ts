@@ -1,4 +1,9 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+} from '@nestjs/common';
 
 export class TimeoutException extends HttpException {
   timeout: number;
@@ -14,14 +19,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     console.log('EXCEPTION FILTER', exception.message);
 
-    response
-      .status(status)
-      .json({
-        statusCode: status,
-        timestamp: new Date().toISOString(),
-        path: request.url,
-        data: process.env.DEBUG ? exception.message : null ,
-        stack: process.env.DEBUG ? exception.stack : null ,
-      });
+    response.status(status).json({
+      statusCode: status,
+      timestamp: new Date().toISOString(),
+      path: request.url,
+      data: process.env.DEBUG ? exception.message : null,
+      stack: process.env.DEBUG ? exception.stack : null,
+    });
   }
 }

@@ -11,28 +11,25 @@ import * as sharp from 'sharp';
 
 @Injectable()
 export class PhotosService {
-
   constructor(private config: ConfigService) {}
 
   async findAll() {
     const dir = join(this.config.STORAGE_ASSETS, 'photos');
     const files = await readdirAsync(dir);
 
-    return files.map(name => ({
+    return files.map((name) => ({
       filename: name,
       thumbPath: [this.config.PHOTOS_BASE_PATH, name].join('/'),
-      downloadPath: [this.config.PHOTOS_DOWNLOAD_PATH, name].join('/')
+      downloadPath: [this.config.PHOTOS_DOWNLOAD_PATH, name].join('/'),
     }));
   }
 
   async create(file: Express.Multer.File) {
-
     // TODO validate is photo
 
-    const fileName = crypto
-    .createHash('md5')
-    .update(file.path)
-    .digest('hex') + extname(file.originalname).toLowerCase();
+    const fileName =
+      crypto.createHash('md5').update(file.path).digest('hex') +
+      extname(file.originalname).toLowerCase();
 
     await renameAsync(file.path, join(this.config.STORAGE_PHOTOS, fileName));
 
@@ -40,9 +37,8 @@ export class PhotosService {
       fileName,
     };
   }
-  
-  async createThumbs(filename: string) {
 
+  async createThumbs(filename: string) {
     const sourceFile = resolve(this.config.STORAGE_PHOTOS, filename);
     const destFile = resolve(this.config.STORAGE_THUMBS, filename);
 
@@ -58,5 +54,4 @@ export class PhotosService {
       thumbName: destFile,
     };
   }
-
 }

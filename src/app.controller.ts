@@ -6,8 +6,8 @@ import { QuotesService } from './quotes/services';
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private quoteService: QuotesService
-    ) {}
+    private quoteService: QuotesService,
+  ) {}
 
   @Get()
   getHello(): string {
