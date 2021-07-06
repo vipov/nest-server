@@ -9,3 +9,6 @@ export class UserEntity {
   password?: string;
   roles?: UserRole[];
 }
+export class TokenPayloadEntity {
+  user: UserEntity;
+}

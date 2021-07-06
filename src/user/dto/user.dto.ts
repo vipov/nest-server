@@ -14,3 +14,14 @@ export class UserRegisterRequestDto {
 export class UserRegisterResponseDto {
   user: UserEntity;
 }
+export class UserLoginRequestDto {
+  @ApiProperty({example: 'piotr@myflow.pl'})
+  email: string;
+  @ApiProperty({example: '123'})
+  password: string;
+}
+
+export class UserLoginResponseDto {
+  token: string;
+  user: UserEntity;
+}
