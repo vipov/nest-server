@@ -8,16 +8,26 @@ import * as crypto from 'crypto';
 import { ConfigService } from '../../config';
 import { resolve } from 'path';
 import * as sharp from 'sharp';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { PhotoEntity } from '../entities';
 
 @Injectable()
 export class PhotosService {
-  constructor(private config: ConfigService) {}
+  constructor(
+    private config: ConfigService,
+
+    @InjectRepository(PhotoEntity)
+    private readonly photoRepository: Repository<PhotoEntity>,
+  ) {}
 
   async findAll() {
     const dir = join(this.config.STORAGE_ASSETS, 'photos');
-    const files = await readdirAsync(dir);
+    // const files = await readdirAsync(dir);
+    let files = await this.photoRepository.find()//.then(p => p.map(e => e.filename))
+    // files = files.map(e => e.filename)
 
-    return files.map((name) => ({
+    return files.map(({filename: name}) => ({
       filename: name,
       thumbPath: [this.config.PHOTOS_BASE_PATH, name].join('/'),
       downloadPath: [this.config.PHOTOS_DOWNLOAD_PATH, name].join('/'),
@@ -33,8 +43,17 @@ export class PhotosService {
 
     await renameAsync(file.path, join(this.config.STORAGE_PHOTOS, fileName));
 
+    
+    const photo = new PhotoEntity();
+    photo.filename = fileName;
+    photo.size = file.size;
+    photo.description = file.originalname;
+
+    await this.photoRepository.save(photo);
+
     return {
       fileName,
+      photo,
     };
   }
 

@@ -16,4 +16,6 @@ export class ConfigService {
     this.PHOTOS_DOMAIN,
     'api/photos/download',
   ].join('/');
+  readonly DB_NAME = resolve(__dirname, '../../storage/db.sql');
+
 }

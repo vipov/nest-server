@@ -34,7 +34,6 @@ export class PhotosController {
   @Render('photos/index')
   async photos() {
     const photos = await this.photosService.findAll();
-    console.log(photos);
     return { photos };
   }
 

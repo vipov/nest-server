@@ -19,13 +19,19 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "test:e2e:watch": "jest --config ./test/jest-e2e.json --watch -t "
+    "test:e2e:watch": "jest --config ./test/jest-e2e.json --watch -t ",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "typeorm:migration:generate": "npm run typeorm -- migration:generate -n",
+    "typeorm:migration:run": "npm run typeorm -- migration:run",
+    "typeorm:migration:revert": "npm run typeorm -- migration:revert",
+    "typeorm:migration:create": "npm run typeorm -- migration:create -n"
   },
   "dependencies": {
     "@nestjs/common": "^7.6.18",
     "@nestjs/core": "^7.6.18",
     "@nestjs/platform-express": "^7.6.18",
     "@nestjs/swagger": "^4.8.2",
+    "@nestjs/typeorm": "^7.1.5",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "dotenv": "^10.0.0",
@@ -35,7 +41,9 @@
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.6",
     "sharp": "^0.28.3",
-    "swagger-ui-express": "^4.1.6"
+    "sqlite3": "^5.0.2",
+    "swagger-ui-express": "^4.1.6",
+    "typeorm": "^0.2.34"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.6.0",
