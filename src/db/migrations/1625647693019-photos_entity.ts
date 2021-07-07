@@ -8,7 +8,7 @@ export class photosEntity1625647693019 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`DROP TABLE "photo_entity"`);
+        // await queryRunner.query(`DROP TABLE "photo_entity"`);
     }
 
 }
