@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Type } from 'class-transformer';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { UserEntity } from '../../user/entities';
 
 @Entity()
 export class PhotoEntity {
@@ -10,4 +12,7 @@ export class PhotoEntity {
 
   @Column({nullable: true}) size: number;
 
+  @ManyToOne(type => UserEntity, {eager: true})
+  @Type(() => UserEntity)
+  user: UserEntity
 }

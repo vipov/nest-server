@@ -8,8 +8,10 @@ import {
   Render,
   Param,
   Res,
+  UseGuards,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
-import { ApiBody, ApiConsumes, ApiProperty } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiProperty } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PhotosService } from '../services/photos.service';
 import { join } from 'path';
@@ -17,6 +19,8 @@ import { User } from '../../user/decorators/user.decorator';
 import { UserEntity } from '../../user/entities';
 import { ConfigService } from '../../config';
 import { Response } from 'express';
+import { AuthGuard } from '../../user/guards/auth.guard';
+import { UploadResponseDto } from '../dto';
 
 export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })
@@ -44,11 +48,20 @@ export class PhotosController {
     description: 'Upload user avatar',
     type: FileUploadDto,
   })
-  async uploadFile(@UploadedFile() file: Express.Multer.File, @Body() body) {
-    const avatar = await this.photosService.create(file);
-    const thumb = await this.photosService.createThumbs(avatar.fileName);
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
+  async uploadFile(@UploadedFile() file: Express.Multer.File, @Body() body, @User() user: UserEntity) {
 
-    return { avatar, thumb, file, body };
+    const avatar = await this.photosService.create(file, user);
+    const thumb = await this.photosService.createThumbs(avatar.fileName);
+ 
+    return new UploadResponseDto({ 
+      photo: avatar.photo, 
+      thumb, 
+      file, 
+      body 
+    });
   }
 
   @Get('download/:fileName')

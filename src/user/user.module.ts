@@ -6,9 +6,15 @@ import { AuthService } from './services/auth.service';
 import { ConfigModule } from '../config';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from '../shared/http-exception.filter';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from './entities';
+import { UserRoleEntity } from './entities/user-role.entity';
+// import * as entities from './entities';
+
+const orm = TypeOrmModule.forFeature([UserEntity, UserRoleEntity]);
 
 @Module({
-  imports: [ConfigModule],
+  imports: [ConfigModule, orm],
   controllers: [UserController],
   providers: [
     UserService,
@@ -18,6 +24,7 @@ import { HttpExceptionFilter } from '../shared/http-exception.filter';
       useClass: HttpExceptionFilter,
     },
   ],
+  exports: [orm, AuthService]
 })
 export class UserModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

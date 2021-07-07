@@ -5,9 +5,11 @@ import { ConfigModule, ConfigService } from '../config';
 import { PhotosController } from './controllers/photos.controller';
 import { PhotosService } from './services/photos.service';
 import * as entities from './entities';
+import { UserModule } from '../user/user.module';
 @Module({
   imports: [
     ConfigModule,
+    UserModule,
     TypeOrmModule.forFeature(Object.values(entities)),
     MulterModule.registerAsync({
       imports: [ConfigModule],

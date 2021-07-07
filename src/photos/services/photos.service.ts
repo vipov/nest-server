@@ -11,6 +11,7 @@ import * as sharp from 'sharp';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PhotoEntity } from '../entities';
+import { UserEntity } from '../../user/entities';
 
 @Injectable()
 export class PhotosService {
@@ -34,7 +35,7 @@ export class PhotosService {
     }));
   }
 
-  async create(file: Express.Multer.File) {
+  async create(file: Express.Multer.File, user: UserEntity) {
     // TODO validate is photo
 
     const fileName =
@@ -47,6 +48,7 @@ export class PhotosService {
     const photo = new PhotoEntity();
     photo.filename = fileName;
     photo.size = file.size;
+    photo.user = user;
     photo.description = file.originalname;
 
     await this.photoRepository.save(photo);

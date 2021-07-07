@@ -41,7 +41,7 @@ export class AuthGuard implements CanActivate {
 
     const user = request.tokenPayload.user;
     const hasRole = () =>
-      !!user.roles.find((role) => !!roles.find((item) => item === role));
+      !!user.roles.find((role) => !!roles.find((item) => item === role.name));
 
     if (!(user && user.roles && hasRole())) {
       throw new UnauthorizedException();
