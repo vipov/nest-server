@@ -10,6 +10,8 @@ import {
   Res,
   UseGuards,
   ClassSerializerInterceptor,
+  ForbiddenException,
+  NotFoundException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiProperty } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -21,6 +23,7 @@ import { ConfigService } from '../../config';
 import { Response } from 'express';
 import { AuthGuard } from '../../user/guards/auth.guard';
 import { UploadResponseDto } from '../dto';
+import { PhotoEntity } from '../entities';
 
 export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })
@@ -65,12 +68,21 @@ export class PhotosController {
   }
 
   @Get('download/:fileName')
-  async download(
-    @Param('fileName') filename: string,
-    @Res() res: Response,
-    @User() user: UserEntity,
-  ) {
-    const file = join(this.configService.STORAGE_PHOTOS, filename);
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  async download(@Param('fileName') filename: string, @Res() res: Response, @User() user: UserEntity) {
+
+    const photo = await PhotoEntity.findOne({filename});
+
+    if(!photo) {
+      throw new NotFoundException('Photo not found: '+filename);
+    }
+
+    if (!photo.user || photo.user.id !== user.id) {
+      throw new ForbiddenException("Sorry! You can't see that.")
+    }
+
+    const file = join(this.configService.STORAGE_PHOTOS, filename)
 
     res.download(file, filename, function (err) {
       if (err) {
@@ -79,7 +91,7 @@ export class PhotosController {
       } else {
         // decrement a download credit, etc.
       }
-    });
+    })
 
     // jeśli nie chcesz by przeglądarka zrobiła prompt na download to użyj: res.sendFile()
   }
