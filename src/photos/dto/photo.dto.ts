@@ -14,3 +14,10 @@ export class UploadResponseDto {
     Object.assign(this, data);
   }
 }
+
+export class ThumbsCreatedDto {
+  thumbName: string;
+}
+export class ThumbsCreatedResponseDto {
+  message: string;
+}

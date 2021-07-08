@@ -1,12 +1,16 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
+import { PhotosApi } from '../app-client';
 import { CreateThumbsEvent } from '../clients';
 import { PhotosService } from '../photos/services/photos.service';
 
 @Controller()
 export class WorkerController {
 
-  constructor(private photosService: PhotosService){}
+  constructor(
+    private photosService: PhotosService,
+    private photosApi: PhotosApi,
+  ){}
 
   @MessagePattern({ cmd: 'sum' })
   accumulate(data: number[]): number {
@@ -15,8 +19,10 @@ export class WorkerController {
   }
 
   @MessagePattern(CreateThumbsEvent.pattern)
-  createThumbs(data: CreateThumbsEvent) {
+  async createThumbs(data: CreateThumbsEvent) {
     console.log('thumbs for', data)
-    return this.photosService.createThumbs(data.filename);
+    const file = await this.photosService.createThumbs(data.filename);
+    const res = await this.photosApi.thumbsCreated(file);
+    console.log('RES', res.data)
   }
 }

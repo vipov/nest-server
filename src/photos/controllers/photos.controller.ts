@@ -14,7 +14,7 @@ import {
   NotFoundException,
   Inject,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiProperty } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PhotosService } from '../services/photos.service';
 import { join } from 'path';
@@ -23,7 +23,7 @@ import { UserEntity } from '../../user/entities';
 import { ConfigService } from '../../config';
 import { Response } from 'express';
 import { AuthGuard } from '../../user/guards/auth.guard';
-import { UploadResponseDto } from '../dto';
+import { ThumbsCreatedDto, ThumbsCreatedResponseDto, UploadResponseDto } from '../dto';
 import { PhotoEntity } from '../entities';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateThumbsEvent, WORKER_SERVICE } from '../../clients';
@@ -33,6 +33,7 @@ export class FileUploadDto {
   file: any;
 }
 
+@ApiTags('photos')
 @Controller('photos')
 export class PhotosController {
   
@@ -64,11 +65,13 @@ export class PhotosController {
 
     const avatar = await this.photosService.create(file, user);
     // const thumb = await this.photosService.createThumbs(avatar.fileName);
-    const thumb = await this.workerClient.send<any, CreateThumbsEvent>(CreateThumbsEvent.pattern, {filename: avatar.fileName}).toPromise();
- 
+    console.log('THUMB SEND TO SERVICE')
+    this.workerClient.send<any, CreateThumbsEvent>(CreateThumbsEvent.pattern, {filename: avatar.fileName})
+    .toPromise().then(res => console.log('THUM SERVICE RESPONSE', res));
+    
     return new UploadResponseDto({ 
       photo: avatar.photo, 
-      thumb, 
+      // thumb, 
       file, 
       body 
     });
@@ -101,5 +104,13 @@ export class PhotosController {
     })
 
     // jeśli nie chcesz by przeglądarka zrobiła prompt na download to użyj: res.sendFile()
+  }
+
+  @Post('thumbs-created')
+  @ApiOperation({operationId: 'thumbsCreated'})
+  thumbsCreated(@Body() data: ThumbsCreatedDto): ThumbsCreatedResponseDto {
+    console.log('THUMBS CREATED', data);
+
+    return {message: 'Dziękuję :)'}
   }
 }
