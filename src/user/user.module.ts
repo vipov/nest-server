@@ -9,6 +9,7 @@ import { HttpExceptionFilter } from '../shared/http-exception.filter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entities';
 import { UserRoleEntity } from './entities/user-role.entity';
+import { DbModule } from '../db/db.module';
 // import * as entities from './entities';
 
 const orm = TypeOrmModule.forFeature([UserEntity, UserRoleEntity]);

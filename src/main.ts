@@ -23,6 +23,8 @@ async function bootstrap() {
 
   // const config = new ConfigService();
   const config = app.get(ConfigService);
+  // const config2 = app.get('WORKER_SERVICE');
+  // (ref1 === ref2) // true/false
 
   app.useStaticAssets(config.STORAGE_ASSETS);
 

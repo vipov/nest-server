@@ -12,6 +12,7 @@ import {
   ClassSerializerInterceptor,
   ForbiddenException,
   NotFoundException,
+  Inject,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiProperty } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -24,6 +25,8 @@ import { Response } from 'express';
 import { AuthGuard } from '../../user/guards/auth.guard';
 import { UploadResponseDto } from '../dto';
 import { PhotoEntity } from '../entities';
+import { ClientProxy } from '@nestjs/microservices';
+import { CreateThumbsEvent, WORKER_SERVICE } from '../../clients';
 
 export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })
@@ -32,9 +35,12 @@ export class FileUploadDto {
 
 @Controller('photos')
 export class PhotosController {
+  
   constructor(
     private photosService: PhotosService,
     private configService: ConfigService,
+    @Inject(WORKER_SERVICE)
+    private workerClient: ClientProxy,
   ) {}
 
   @Get()
@@ -57,7 +63,8 @@ export class PhotosController {
   async uploadFile(@UploadedFile() file: Express.Multer.File, @Body() body, @User() user: UserEntity) {
 
     const avatar = await this.photosService.create(file, user);
-    const thumb = await this.photosService.createThumbs(avatar.fileName);
+    // const thumb = await this.photosService.createThumbs(avatar.fileName);
+    const thumb = await this.workerClient.send<any, CreateThumbsEvent>(CreateThumbsEvent.pattern, {filename: avatar.fileName}).toPromise();
  
     return new UploadResponseDto({ 
       photo: avatar.photo, 

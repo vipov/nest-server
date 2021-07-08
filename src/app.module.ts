@@ -7,10 +7,26 @@ import { ConfigModule } from './config/config.module';
 import { PhotosModule } from './photos/photos.module';
 import { DbModule } from './db/db.module';
 import { ChatGateway } from './gateways/chat.gateway';
+// import { ClientProxyFactory, ClientsModule, Transport } from '@nestjs/microservices';
+import { ClientsModule } from './clients/clients.module';
 
 @Module({
-  imports: [QuotesModule, UserModule, ConfigModule, PhotosModule, DbModule],
+  imports: [
+    QuotesModule, 
+    UserModule, 
+    ConfigModule, 
+    PhotosModule, 
+    DbModule, 
+    ClientsModule,
+    // ClientsModule.register([
+    //   {name: WORKER_SERVICE, transport: Transport.TCP, options: {port: 3001}},
+    //   // {name: VIDEO_SERVICE, transport: Transport.REDIS}
+    // ])
+  ],
   controllers: [AppController],
-  providers: [AppService, ChatGateway],
+  providers: [
+    AppService, 
+    ChatGateway,
+  ],
 })
 export class AppModule {}

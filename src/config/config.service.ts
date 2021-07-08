@@ -3,6 +3,8 @@ import { resolve, join, posix } from 'path';
 
 @Injectable()
 export class ConfigService {
+  readonly WORKER_PORT = parseInt(process.env.WORKER_PORT, 10);
+
   readonly JWT_SECRET = process.env.JWT_SECRET;
   readonly TOKEN_HEADER_NAME = process.env.TOKEN_HEADER_NAME;
 

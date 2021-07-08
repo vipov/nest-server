@@ -1,18 +1,19 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Inject, Param } from '@nestjs/common';
 import { ClientProxy, Client, Transport } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import { AppService } from './app.service';
+import { WORKER_SERVICE } from './clients';
 import { QuotesService } from './quotes/services';
 
 @Controller()
 export class AppController {
 
-  @Client({transport: Transport.TCP, options: {port: 3001}})
-  client: ClientProxy;
-
   constructor(
     private readonly appService: AppService,
     private quoteService: QuotesService,
+
+    @Inject(WORKER_SERVICE)
+    private client: ClientProxy,
   ) {}
 
   @Get()
