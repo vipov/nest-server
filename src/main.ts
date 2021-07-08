@@ -19,6 +19,7 @@ async function bootstrap() {
     expressAdapter,
   );
 
+  app.enableShutdownHooks();
   app.setGlobalPrefix('api');
 
   // const config = new ConfigService();

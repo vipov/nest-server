@@ -10,6 +10,7 @@ const version = package.version;
 delete package.devDependencies;
 delete package.jest;
 package.bin.api = package.bin.api.replace('./dist', '.')
+package.scripts.pretypeorm = package.scripts.pretypeorm.replace('./src', '.')
 
 console.log('Copy:', 'package.json');
 fs.writeFileSync('dist/package.json', JSON.stringify(package, null, 2));

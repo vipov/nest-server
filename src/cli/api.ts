@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-console.log('API WELCOME :)')
- 
+require('dotenv').config();
+
 const clear = require('clear');
 const chalk = require('chalk');
 const figlet = require('figlet');

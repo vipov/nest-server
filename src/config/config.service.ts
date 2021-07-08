@@ -1,8 +1,34 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnApplicationShutdown, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { mkdirSync } from 'fs';
 import { resolve, join, posix } from 'path';
 
 @Injectable()
-export class ConfigService {
+export class ConfigService implements OnModuleInit, OnModuleDestroy, OnApplicationShutdown {
+
+  async onModuleInit() {
+    if(!this.WORKER_PORT) {
+      throw new Error('ConfigService.WORKER_PORT is required, check your .env setup');
+    }
+    mkdirSync(this.STORAGE_TMP, {recursive: true});
+    mkdirSync(this.STORAGE_PHOTOS, {recursive: true});
+    mkdirSync(this.STORAGE_ASSETS, {recursive: true});
+    mkdirSync(this.STORAGE_THUMBS, {recursive: true});
+  }
+
+  async onModuleDestroy() {
+    console.log('DESTROY')
+  }
+
+  async onApplicationShutdown(sig) {
+    // console.log('SHUTDOWN', sig)
+    await new Promise(resolve => {
+      setTimeout(() => {
+        console.log('SHUTTING DOWN DONE')
+        resolve(1);
+      }, 200);
+    })
+  }
+
   readonly WORKER_PORT = parseInt(process.env.WORKER_PORT, 10);
 
   readonly JWT_SECRET = process.env.JWT_SECRET;
@@ -20,4 +46,19 @@ export class ConfigService {
   ].join('/');
   readonly DB_NAME = resolve(__dirname, '../../storage/db.sql');
 
+  // TODO jak jesteśmy w dist zamieniamy src/ na ./
+  readonly ORMCONFIG = {
+    "type": "sqlite",
+    "database": this.DB_NAME,
+    "entities": [
+      "src/**/*.entity.ts"
+    ],
+    "migrationsTableName": "migrations",
+    "migrations": [
+      "src/db/migrations/*.ts"
+    ],
+    "cli": {
+      "migrationsDir": "src/db/migrations"
+    }
+  }
 }
