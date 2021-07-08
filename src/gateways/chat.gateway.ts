@@ -1,6 +1,7 @@
 import { SubscribeMessage, WebSocketGateway, OnGatewayInit, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { Logger } from '@nestjs/common';
+import { PhotosService } from '../photos/services/photos.service';
 
 export interface Message {
   sender: string;
@@ -14,7 +15,7 @@ export interface User {
 }
 
 @WebSocketGateway({ namespace: '/chat' })
-export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
   @WebSocketServer() 
   wss: Server;
@@ -24,7 +25,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   messages: Message[] = [];
 
-  constructor() {}
+  constructor(
+    private photosService: PhotosService,
+  ) {}
+
+  afterInit(server: Server) {
+    
+    this.photosService.messages$.subscribe(message => {
+      server.emit('chatToClient', message);
+    })
+  }
 
   handleConnection(client: Socket, ...args: any[]) {
     this.users.push({client, username: ''});

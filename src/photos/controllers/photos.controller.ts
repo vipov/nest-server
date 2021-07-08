@@ -110,7 +110,7 @@ export class PhotosController {
   @ApiOperation({operationId: 'thumbsCreated'})
   thumbsCreated(@Body() data: ThumbsCreatedDto): ThumbsCreatedResponseDto {
     console.log('THUMBS CREATED', data);
-
+    this.photosService.sendToChat({message: 'Thumb created: '+data.thumbName, sender: 'Microservice'})
     return {message: 'Dziękuję :)'}
   }
 }

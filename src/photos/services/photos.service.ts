@@ -12,9 +12,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PhotoEntity } from '../entities';
 import { UserEntity } from '../../user/entities';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class PhotosService {
+
+  private messages$$ = new Subject();
+
+  public messages$ = this.messages$$.asObservable();
+
   constructor(
     private config: ConfigService,
 
@@ -22,6 +28,10 @@ export class PhotosService {
     private readonly photoRepository: Repository<PhotoEntity>,
   ) {}
 
+  sendToChat(message) {
+    this.messages$$.next(message);
+  }
+  
   async findAll() {
     const dir = join(this.config.STORAGE_ASSETS, 'photos');
     // const files = await readdirAsync(dir);
