@@ -13,7 +13,7 @@ import { ClientsModule } from '../clients/clients.module';
     ConfigModule,
     UserModule, 
     DbModule,
-    ClientsModule,
+    ClientsModule.register({port: 3001}),
     TypeOrmModule.forFeature(Object.values(entities)),
     MulterModule.registerAsync({
       imports: [ConfigModule],

@@ -17,7 +17,7 @@ import { ClientsModule } from './clients/clients.module';
     ConfigModule, 
     PhotosModule, 
     DbModule, 
-    ClientsModule,
+    ClientsModule.register({port: 3001}),
     // ClientsModule.register([
     //   {name: WORKER_SERVICE, transport: Transport.TCP, options: {port: 3001}},
     //   // {name: VIDEO_SERVICE, transport: Transport.REDIS}
