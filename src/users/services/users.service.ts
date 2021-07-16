@@ -14,12 +14,14 @@ export class UsersService {
     new User({
       id: 1, 
       name: 'Piotr', 
+      email: 'piotr@myflow.pl',
       password: '123',
       roles: [this.roles[0]]
     }),
     new User({
       id: 2, 
       name: 'Paweł', 
+      email: 'piotr@myflow.pl',
       password: '123',
       roles: [this.roles[1]]
     }),
@@ -39,7 +41,10 @@ export class UsersService {
   }
 
   async findBy(query: Partial<User>): Promise<User[]> {
-    return this.users.filter(user => user.email === query.email);
+    return [
+      ...this.users.filter(user => user.email === query.email),
+      ...this.users.filter(user => user.id === query.id),
+    ];
   }
 
   async findAll(searchString?: string): Promise<User[]> {

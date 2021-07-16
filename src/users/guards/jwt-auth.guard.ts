@@ -1,24 +1,27 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { RequestPayload, Roles, User } from '../entities';
+import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   
-  constructor(private readonly reflector: Reflector) {}
+  constructor(
+    private reflector: Reflector,
+    private authService: AuthService
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     
     const request = context.switchToHttp().getRequest();
-    
-    //TODO pobieramy api token i dekodujemy jego wartości
-    request.payload = {
-      user: new User({
-        id: 1,
-        name: 'Piotr',
-        roles: [{id: 1, name: Roles.ADMIN}]
-      })
-    } as RequestPayload;
+
+    const token = this.extractToken(request);
+
+    request.payload = await this.authService.decodeUserToken(token);
+
+    if(!request.payload) {
+      return false;
+    }
 
     const requiredRoles = this.reflector.get<Roles[]>('roles', context.getHandler());
     
@@ -29,5 +32,13 @@ export class JwtAuthGuard implements CanActivate {
     const userRoles = request.tokenPayload.user.roles.map(role => role.name);
 
     return requiredRoles.some((role) => userRoles?.includes(role));
+  }
+
+  extractToken(request) {
+    const token = request.headers['authorization'];
+
+    if(token) {
+      return token.replace('Bearer ', '')
+    }
   }
 }
