@@ -17,5 +17,18 @@ export class User {
   password?: string;
   roles?: Role[];
 
-  constructor(user: Partial<User>){ Object.assign(this, user)}
+  constructor(user: Partial<User>){ 
+    if(!user.roles) {
+      user.roles = [];
+    }
+    Object.assign(this, user)
+  }
+}
+
+export class TokenPayload { 
+  username: string;
+  sub: number;
+}
+export class RequestPayload {
+  user: User
 }
