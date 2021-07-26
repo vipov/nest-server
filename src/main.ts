@@ -3,11 +3,15 @@ import { AppModule } from './app.module';
 import { expressApp } from './express/server';
 import { ExpressAdapter, NestExpressApplication } from "@nestjs/platform-express";
 import { SwaggerModule, DocumentBuilder, SwaggerDocumentOptions, SwaggerCustomOptions } from '@nestjs/swagger';
+import { LoggerMiddleware } from './users/middlewares/logger.middleware';
 
 const expressAdapter = new ExpressAdapter(expressApp);
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, expressAdapter);
+
+  // const logger = app.get(LoggerMiddleware);
+  // app.use(logger.use.bind(logger))
 
   // SWAGGER SETUP
   const config = new DocumentBuilder()
