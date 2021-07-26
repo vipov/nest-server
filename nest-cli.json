@@ -7,6 +7,14 @@
       "**/*.js",
       "**/*.json"
     ],
-    "watchAssets": true
+    "watchAssets": true,
+    "plugins": [{
+      "name": "@nestjs/swagger/plugin",
+      "options": {
+        "classValidatorShim": true,
+        "dtoFileNameSuffix": [".dto.ts", ".entity.ts"],
+        "controllerFileNameSuffix": ".controller.ts"
+      }
+    }]
   }
 }
