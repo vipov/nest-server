@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { Payload } from '../decorators/payload.decorator';
@@ -6,6 +6,8 @@ import { SetRoles } from '../decorators/roles.decorator';
 import { CreateUserDto, CreateUserResponse, UpdateUserDto, UpdateUserResponse } from '../dto';
 import { Roles, User } from '../entities';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { PerformanceInterceptor } from '../interceptors/performance.interceptor';
+import { UserByIdPipe } from '../pipes/user-by-id.pipe';
 import { UsersService } from '../services';
 
 @ApiTags('users')
@@ -13,6 +15,7 @@ import { UsersService } from '../services';
 @SetRoles(Roles.ROOT)
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(PerformanceInterceptor)
 export class UsersController {
 
   constructor(
@@ -27,11 +30,13 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Payload('user') user: User) {
+  @UsePipes()
+  @ApiParam({name: 'id', type: Number})
+  findOne(@Param('id', ParseIntPipe) id: number, @Payload('user') user: User) {
 
     console.log('USER', user)
 
-    return this.usersService.findOne(+id);
+    return this.usersService.findOne(id);
   }
 
   @Post()
@@ -49,7 +54,10 @@ export class UsersController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @ApiParam({name: 'id', type: Number})
+  remove(@Param('id', UserByIdPipe) user: User) {
+    
+    console.log('USER', user)
+    return this.usersService.remove(user.id);
   }
 }
