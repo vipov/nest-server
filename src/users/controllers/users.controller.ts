@@ -1,7 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Auth } from '../decorators/auth.decorator';
+import { Payload } from '../decorators/payload.decorator';
+import { SetRoles } from '../decorators/roles.decorator';
 import { CreateUserDto, CreateUserResponse, UpdateUserDto, UpdateUserResponse } from '../dto';
-import { User } from '../entities';
+import { Roles, User } from '../entities';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { UsersService } from '../services';
 
 @ApiTags('users')
@@ -19,7 +23,12 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  @SetRoles(Roles.ADMIN)
+  @UseGuards(JwtAuthGuard)
+  findOne(@Param('id') id: string, @Payload('user') user: User) {
+
+    console.log('USER', user)
+
     return this.usersService.findOne(+id);
   }
 

@@ -10,8 +10,6 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
   providers: [
     UsersService, 
     AuthService, 
-    LoggerMiddleware,
-    // Logger,
     {
       provide: Logger, 
       useValue: new Logger('UserModule')

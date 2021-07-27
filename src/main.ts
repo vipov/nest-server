@@ -10,9 +10,6 @@ const expressAdapter = new ExpressAdapter(expressApp);
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, expressAdapter);
 
-  // const logger = app.get(LoggerMiddleware);
-  // app.use(logger.use.bind(logger))
-
   // SWAGGER SETUP
   const config = new DocumentBuilder()
     .setTitle('Mój Projekt w Nest')
