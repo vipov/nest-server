@@ -1,5 +1,6 @@
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Patch, Post, Query, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { NotFoundError } from 'rxjs';
 import { Auth } from '../decorators/auth.decorator';
 import { Payload } from '../decorators/payload.decorator';
 import { SetRoles } from '../decorators/roles.decorator';
@@ -33,11 +34,17 @@ export class UsersController {
   @Get(':id')
   @UsePipes()
   @ApiParam({name: 'id', type: Number})
-  findOne(@Param('id', ParseIntPipe) id: number, @Payload('user') user: User) {
+  async findOne(@Param('id', ParseIntPipe) id: number, @Payload('user') user: User) {
 
     console.log('USER', user)
 
-    return this.usersService.findOne(id);
+    const userRecord = await this.usersService.findOne(id);
+
+    if(!userRecord) {
+      throw new NotFoundException('User not found')
+    }
+    
+    return userRecord;
   }
 
   @Post()

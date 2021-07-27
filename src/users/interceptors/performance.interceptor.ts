@@ -1,5 +1,5 @@
 import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
-import { map, Observable, tap } from 'rxjs';
+import { catchError, map, Observable, of, tap } from 'rxjs';
 import { performance } from "perf_hooks";
 // import { map } from 'rxjs/operators';
 
@@ -27,7 +27,8 @@ export class PerformanceInterceptor implements NestInterceptor {
         // performance.measure('Duration', 'A', 'B')
         // const measure = performance.timerify('A', 'B')
         // this.logger.debug(measure);
-      })
+      }),
+      // catchError(err => of({status: 300, message: 'przechwycone przez interceptor'}))
     );
   }
 }

@@ -3,15 +3,17 @@ import { AppModule } from './app.module';
 import { expressApp } from './express/server';
 import { ExpressAdapter, NestExpressApplication } from "@nestjs/platform-express";
 import { SwaggerModule, DocumentBuilder, SwaggerDocumentOptions, SwaggerCustomOptions } from '@nestjs/swagger';
-import { LoggerMiddleware } from './users/middlewares/logger.middleware';
+import { ConfigService } from './config';
 
 const expressAdapter = new ExpressAdapter(expressApp);
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, expressAdapter);
 
+  const config: ConfigService = app.get(ConfigService);
+
   // SWAGGER SETUP
-  const config = new DocumentBuilder()
+  const swaggerConfig = new DocumentBuilder()
     .setTitle('Mój Projekt w Nest')
     .setDescription('Przykładowy projekt w Node.js i TypeScript')
     .setVersion('1.0')
@@ -22,7 +24,7 @@ async function bootstrap() {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey
   };
 
-  const document = SwaggerModule.createDocument(app, config, options);
+  const document = SwaggerModule.createDocument(app, swaggerConfig, options);
 
   const customOptions: SwaggerCustomOptions = {
     swaggerOptions: { persistAuthorization: true },
@@ -31,6 +33,6 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document, customOptions);
   // END OF SWAGGER SETUP
 
-  await app.listen(3000);
+  await app.listen(config.PORT);
 }
 bootstrap();
