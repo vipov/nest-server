@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AppService } from './app.service';
+import { ConfigService } from './config';
 import { UsersService } from './users/services';
 
 @ApiTags('app')
@@ -9,8 +10,11 @@ export class AppController {
 
   constructor(
     private readonly appService: AppService,
-    private usersService: UsersService
-    ) {}
+    private usersService: UsersService,
+    private config: ConfigService,
+    ) {
+      // console.log('CONFIG', config);
+    }
 
   @Get()
   getHello(): string {
