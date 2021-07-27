@@ -13,7 +13,12 @@ export class CreateUserDto {
 }
 
 export class CreateUserResponse {
-  user: User
+
+  user: User;
+
+  constructor(data: CreateUserResponse) {
+    Object.assign(this, data)
+  }
 }
 
 export class UpdateUserDto {

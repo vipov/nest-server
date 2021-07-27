@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { Payload } from '../decorators/payload.decorator';
@@ -16,6 +16,7 @@ import { UsersService } from '../services';
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @UseInterceptors(PerformanceInterceptor)
+@UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
 
   constructor(
@@ -42,7 +43,7 @@ export class UsersController {
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<CreateUserResponse> {
     const user = await this.usersService.create(createUserDto);
-    return {user}
+    return new CreateUserResponse({user})
   }
 
   @Patch(':id')

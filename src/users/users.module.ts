@@ -7,9 +7,12 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '../config';
 import { LOGGER_SCOPE } from './LOGGER_SCOPE';
+import { APP_FILTER } from '@nestjs/core';
+import { UserExceptionFilter } from './filters/user-exception.filter';
 
 @Module({
   imports: [
+    ConfigModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -23,6 +26,10 @@ import { LOGGER_SCOPE } from './LOGGER_SCOPE';
   providers: [
     UsersService, 
     AuthService, 
+    {
+      provide: APP_FILTER,
+      useClass: UserExceptionFilter
+    },
     {
       provide: LOGGER_SCOPE,
       useValue: 'UserModule'
