@@ -10,6 +10,10 @@ import { UsersService } from '../services';
 
 @ApiTags('users')
 @Controller('users')
+
+@SetRoles(Roles.ADMIN)
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class UsersController {
 
   constructor(
@@ -23,9 +27,6 @@ export class UsersController {
   }
 
   @Get(':id')
-  @SetRoles(Roles.ROOT)
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
   findOne(@Param('id') id: string, @Payload('user') user: User) {
 
     console.log('USER', user)
