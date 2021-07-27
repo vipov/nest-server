@@ -10,8 +10,7 @@ import { UsersService } from '../services';
 
 @ApiTags('users')
 @Controller('users')
-
-@SetRoles(Roles.ADMIN)
+@SetRoles(Roles.ROOT)
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 export class UsersController {
@@ -21,6 +20,7 @@ export class UsersController {
   ) {}
 
   @Get()
+  @SetRoles(Roles.ADMIN)
   @ApiQuery({required: false, name: 'q'})
   async findAll(@Query('q') q: string): Promise<User[]> {
     return this.usersService.findAll(q);
