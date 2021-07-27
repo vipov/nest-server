@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { Payload } from '../decorators/payload.decorator';
 import { SetRoles } from '../decorators/roles.decorator';
@@ -23,8 +23,9 @@ export class UsersController {
   }
 
   @Get(':id')
-  @SetRoles(Roles.ADMIN)
+  @SetRoles(Roles.ROOT)
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   findOne(@Param('id') id: string, @Payload('user') user: User) {
 
     console.log('USER', user)

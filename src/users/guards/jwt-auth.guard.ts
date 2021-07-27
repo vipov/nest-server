@@ -3,25 +3,30 @@ import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { Roles, User } from '../entities';
+import { AuthService } from '../services';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
 
   constructor(
-    private reflector: Reflector
+    private reflector: Reflector,
+    private authService: AuthService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
 
     const request: Request = context.switchToHttp().getRequest()
 
-    // todo decode jwt token -> add payload to request
+    const token = this.extractToken(request);
 
-    request.payload = {
-      user: new User({
-        id: 1,
-        roles: [{id: 1, name: Roles.ADMIN}]
-      })
+    if(!token) {
+      return false;
+    }
+
+    request.payload = await this.authService.decodeUserToken(token);
+
+    if(!request.payload) {
+      return false;
     }
 
     const handler = context.getHandler();
@@ -35,5 +40,12 @@ export class JwtAuthGuard implements CanActivate {
     const userRoles = request.payload.user.roles.map(role => role.name);
 
     return requiredRoles.some(role => userRoles.includes(role));
+  }
+
+  extractToken(request) {
+
+    const token = request.headers['authorization'];
+
+    return (token) ? token.replace('Bearer ', '') : '';
   }
 }
