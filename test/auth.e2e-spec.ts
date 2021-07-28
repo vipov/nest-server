@@ -6,6 +6,8 @@ import { AppService } from '../src/app.service';
 import { AuthLoginDto, AuthLoginResponse, AuthRegisterDto, AuthRegisterResponse } from '../src/users/dto';
 import { User } from '../src/users/entities';
 import { AuthService } from '../src/users/services';
+import { resolve } from 'path';
+import { readFileSync } from 'fs';
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
@@ -116,6 +118,30 @@ describe('AuthController (e2e)', () => {
       .then((res) => {
         expect(res.body).toMatchObject(user);
         expect(res.status).toBe(200)
+      });
+  });
+
+  it('/photos/upload Success', async () => {
+
+    const file = 'logo.png';
+    const filePath = resolve('./test/fixtures/logo.png');
+
+    const resBody = {
+      photo: expect.any(Object),
+      thumbs: expect.any(Object),
+      file: expect.any(Object),
+      data: {
+        description: 'my test description'
+      },
+    }
+
+    return request(app.getHttpServer())
+      .post('/photos/upload')
+      .field('description', resBody.data.description)
+      .attach('file', readFileSync(filePath), file)
+      .then((res) => {
+        expect(res.body).toMatchObject(resBody);
+        expect(res.status).toBe(201)
       });
   });
 });
