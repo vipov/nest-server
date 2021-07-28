@@ -7,12 +7,18 @@ import { join, extname } from 'path';
 import { ConfigService, joinUrl } from '../../config';
 import { createHash } from 'crypto';
 import * as sharp from 'sharp';
+import { Photo } from '../entities';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class PhotosService {
 
   constructor(
-    private config: ConfigService
+    private config: ConfigService,
+
+    @InjectRepository(Photo)
+    private photosRepository: Repository<Photo>
   ) {}
 
   async create(file: Express.Multer.File) {
@@ -25,7 +31,13 @@ export class PhotosService {
 
     await renameAsync(file.path, destFile);
 
-    return {filename};
+    const photo = new Photo();
+    photo.filename = filename;
+    photo.description = file.originalname;
+
+    await this.photosRepository.save(photo);
+
+    return photo;
   }
 
   async createThumbs(filename: string) {
@@ -45,13 +57,15 @@ export class PhotosService {
   }
 
   async findAll() {
-    
-    const files = await readdirAsync(this.config.STORAGE_THUMBS)
 
-    return files.map((filename) => ({
-      filename,
-      thumbUrl: joinUrl(this.config.PHOTOS_BASE_PATH, filename),
-      downloadUrl: joinUrl(this.config.PHOTOS_DOWNLOAD_PATH, filename),
+    const files = await this.photosRepository.find();
+    
+    // const files = await readdirAsync(this.config.STORAGE_THUMBS)
+
+    return files.map((photo) => ({
+      ...photo,
+      thumbUrl: joinUrl(this.config.PHOTOS_BASE_PATH, photo.filename),
+      downloadUrl: joinUrl(this.config.PHOTOS_DOWNLOAD_PATH, photo.filename),
     }));
   }
 }

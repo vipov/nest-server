@@ -24,6 +24,9 @@ export class ConfigService implements OnModuleInit, OnModuleDestroy, OnApplicati
   readonly PHOTOS_BASE_PATH = joinUrl(this.PHOTOS_DOMAIN, 'thumbs');
   readonly PHOTOS_DOWNLOAD_PATH = joinUrl(this.PHOTOS_DOMAIN, 'photos/download');
 
+  // DB
+  readonly DB_NAME = resolve(this.STORAGE_DIR, 'db.sql');
+
 
   async onModuleInit() {
     
