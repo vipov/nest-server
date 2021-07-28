@@ -17,11 +17,11 @@ export class AuthLoginDto {
   @ApiProperty({example: 0})
   @Transform(v => !!v.value, {toClassOnly: true})
   @Transform(v => v.value ? 1 : 0, {toPlainOnly: true})
-  marketing: number;
+  marketing?: number;
   
   @Transform(v => new Date(v.value), {toClassOnly: true})
   @Transform((v) => (v.value as Date).toISOString(), {toPlainOnly: true})
-  createdAt: Date
+  createdAt?: Date
 }
 
 export class AuthLoginResponse {

@@ -34,7 +34,7 @@ export class JwtAuthGuard implements CanActivate {
 
     const requiredRoles: Roles[] = this.reflector.getAllAndMerge(ROLES_KEY, [handler, cls]);
 
-    if(!requiredRoles) {
+    if(requiredRoles.length === 0) {
       return true;
     }
 

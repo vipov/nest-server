@@ -41,7 +41,7 @@ export class PhotosController {
   async index() {
 
     const photos = await this.photsService.findAll();
-    console.log(photos) 
+
     return {
       photos,
       message: 'Hello to photos module :)'

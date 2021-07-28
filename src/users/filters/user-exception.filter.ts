@@ -8,7 +8,7 @@ export class UserExceptionFilter implements ExceptionFilter {
     private config: ConfigService
   ) {}
 
-  catch(exception, host: ArgumentsHost) {
+  catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest();
     const response = ctx.getResponse();
@@ -22,6 +22,7 @@ export class UserExceptionFilter implements ExceptionFilter {
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
+      data: exception.getResponse ? exception.getResponse() : null,
       userId,
       errorMessage: this.config.DEBUG ? exception.message : null,
       errorStack: this.config.DEBUG ? exception.stack : null

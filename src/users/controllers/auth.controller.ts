@@ -1,8 +1,9 @@
-import { Body, Controller, HttpException, HttpStatus, Post, UnauthorizedException, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, UnauthorizedException, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { AuthLoginDto, AuthLoginResponse, AuthRegisterDto, AuthRegisterResponse } from '../dto';
 import { User } from '../entities';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AuthService, UsersService } from '../services';
 
 @ApiTags('auth')
@@ -25,7 +26,7 @@ export class AuthController {
   @Post('login')
   @UsePipes(new ValidationPipe({transform: true}))
   async login(@Body() credentials: AuthLoginDto): Promise<AuthLoginResponse> {
-    console.log('credentials', credentials)
+
     const user = await this.authService.findByCredentials(credentials.email, credentials.password);
 
     if(!user) {
@@ -36,5 +37,12 @@ export class AuthController {
     const token = await this.authService.encodeUserToken(user);
 
     return {token, user};
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  myself(@Auth() user: User) {
+    return user;
   }
 }
