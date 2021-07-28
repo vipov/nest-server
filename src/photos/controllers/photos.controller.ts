@@ -1,6 +1,10 @@
-import { Body, Controller, Get, Post, Render, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Post, Render, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+import { access } from 'fs';
+import { join } from 'path';
+import { ConfigService } from '../../config';
 import { PhotosService } from '../services/photos.service';
 
 export class FileUploadDto {
@@ -16,7 +20,8 @@ export class FileUploadDto {
 export class PhotosController {
 
   constructor(
-    private photsService: PhotosService
+    private config: ConfigService,
+    private photsService: PhotosService,
   ) {}
 
   @Post('upload')
@@ -41,5 +46,25 @@ export class PhotosController {
       photos,
       message: 'Hello to photos module :)'
     }
+  }
+
+  @Get('download/:filename')
+  async download(@Param('filename') filename: string, @Res() res: Response) {
+
+    const file = join(this.config.STORAGE_PHOTOS, filename)
+
+    access(file, err => {
+
+      if(err) {
+
+        res.status(404).send('Not found: '+filename)
+        
+      } else {
+        res.download(file, filename, (err) => {
+          // TODO handle error OR success
+        })
+      }
+    })
+
   }
 }
