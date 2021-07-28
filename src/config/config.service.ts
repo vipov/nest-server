@@ -2,7 +2,7 @@ import { Injectable, OnApplicationShutdown, OnModuleDestroy, OnModuleInit } from
 import { statSync, mkdirSync } from 'fs';
 import { resolve } from 'path';
 
-const joinUrl = (...paths) => paths.join('/');
+export const joinUrl = (...paths) => paths.join('/');
 
 @Injectable()
 export class ConfigService implements OnModuleInit, OnModuleDestroy, OnApplicationShutdown {

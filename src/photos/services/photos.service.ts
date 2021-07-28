@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { rename } from 'fs';
+import { readdir, rename } from 'fs';
 import { promisify } from "util";
 const renameAsync = promisify(rename);
+const readdirAsync = promisify(readdir);
 import { join, extname } from 'path';
-import { ConfigService } from '../../config';
+import { ConfigService, joinUrl } from '../../config';
 import { createHash } from 'crypto';
 import * as sharp from 'sharp';
 
@@ -41,5 +42,16 @@ export class PhotosService {
     return {
       small: destFile
     }
+  }
+
+  async findAll() {
+    
+    const files = await readdirAsync(this.config.STORAGE_THUMBS)
+
+    return files.map((filename) => ({
+      filename,
+      thumbUrl: joinUrl(this.config.PHOTOS_BASE_PATH, filename),
+      downloadUrl: joinUrl(this.config.PHOTOS_DOWNLOAD_PATH, filename),
+    }));
   }
 }

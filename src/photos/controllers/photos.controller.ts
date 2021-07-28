@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Post, Render, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { PhotosService } from '../services/photos.service';
@@ -29,5 +29,17 @@ export class PhotosController {
     const thumbs = await this.photsService.createThumbs(photo.filename);
 
     return { photo, thumbs, file, data }
+  }
+
+  @Get()
+  @Render('photos/index')
+  async index() {
+
+    const photos = await this.photsService.findAll();
+    console.log(photos) 
+    return {
+      photos,
+      message: 'Hello to photos module :)'
+    }
   }
 }

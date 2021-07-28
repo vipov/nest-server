@@ -4,6 +4,7 @@ import { expressApp } from './express/server';
 import { ExpressAdapter, NestExpressApplication } from "@nestjs/platform-express";
 import { SwaggerModule, DocumentBuilder, SwaggerDocumentOptions, SwaggerCustomOptions } from '@nestjs/swagger';
 import { ConfigService } from './config';
+import { join } from 'path';
 
 const expressAdapter = new ExpressAdapter(expressApp);
 
@@ -13,7 +14,11 @@ async function bootstrap() {
   const config: ConfigService = app.get(ConfigService);
 
   app.enableShutdownHooks();
+
   app.useStaticAssets(config.STORAGE_ASSETS);
+
+  app.setViewEngine('hbs');
+  app.setBaseViewsDir(join(__dirname, 'views'));
 
   // SWAGGER SETUP
   const swaggerConfig = new DocumentBuilder()
