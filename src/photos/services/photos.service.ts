@@ -5,6 +5,7 @@ const renameAsync = promisify(rename);
 import { join, extname } from 'path';
 import { ConfigService } from '../../config';
 import { createHash } from 'crypto';
+import * as sharp from 'sharp';
 
 @Injectable()
 export class PhotosService {
@@ -24,5 +25,21 @@ export class PhotosService {
     await renameAsync(file.path, destFile);
 
     return {filename};
+  }
+
+  async createThumbs(filename: string) {
+
+    const srcFile = join(this.config.STORAGE_PHOTOS, filename);
+    const destFile = join(this.config.STORAGE_THUMBS, filename);
+
+    await sharp(srcFile)
+      .rotate()
+      .resize(200, 200, {fit: 'cover', position: 'attention'})
+      .jpeg({quality: 100})
+      .toFile(destFile);
+
+    return {
+      small: destFile
+    }
   }
 }

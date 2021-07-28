@@ -1,4 +1,4 @@
-import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { PhotosService } from '../services/photos.service';
@@ -6,6 +6,9 @@ import { PhotosService } from '../services/photos.service';
 export class FileUploadDto {
   @ApiProperty({type: 'string', format: 'binary'})
   file: any;
+
+  @ApiProperty({type: 'string', required: false})
+  description?: string;
 }
 
 @ApiTags('photos')
@@ -20,10 +23,11 @@ export class PhotosController {
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({type: FileUploadDto})
-  async upload(@UploadedFile() file: Express.Multer.File) {
+  async upload(@UploadedFile() file: Express.Multer.File, @Body() data: FileUploadDto) {
     
     const photo = await this.photsService.create(file);
+    const thumbs = await this.photsService.createThumbs(photo.filename);
 
-    return { photo, file }
+    return { photo, thumbs, file, data }
   }
 }
