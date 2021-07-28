@@ -10,6 +10,8 @@ const expressAdapter = new ExpressAdapter(expressApp);
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, expressAdapter);
 
+  app.enableShutdownHooks();
+  
   const config: ConfigService = app.get(ConfigService);
 
   // SWAGGER SETUP

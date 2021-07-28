@@ -1,12 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnApplicationShutdown, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { statSync, mkdirSync } from 'fs';
 import { resolve } from 'path';
 
 const joinUrl = (...paths) => paths.join('/');
 
 @Injectable()
-export class ConfigService {
-  
-  constructor() {}
+export class ConfigService implements OnModuleInit, OnModuleDestroy, OnApplicationShutdown {
 
   readonly DEBUG = process.env.DEBUG === 'true';
   readonly PORT = parseInt(process.env.PORT, 10);
@@ -25,4 +24,30 @@ export class ConfigService {
   readonly PHOTOS_BASE_PATH = joinUrl(this.PHOTOS_DOMAIN, 'thumbs');
   readonly PHOTOS_DOWNLOAD_PATH = joinUrl(this.PHOTOS_DOMAIN, 'photos/download');
 
+
+  async onModuleInit() {
+    
+    statSync(this.STORAGE_DIR);
+    mkdirSync(this.STORAGE_TMP, {recursive: true});
+    mkdirSync(this.STORAGE_PHOTOS, {recursive: true});
+    mkdirSync(this.STORAGE_ASSETS, {recursive: true});
+    mkdirSync(this.STORAGE_THUMBS, {recursive: true});
+    
+  }
+
+  async onModuleDestroy() {
+    // console.log('DESTROY ConfigService')
+  }
+
+  async onApplicationShutdown(signal?: string) {
+    // console.log('SHUTDOWN ConfigService')
+
+    // await new Promise(resolve => {
+    //   console.log('SHUTDOWN START')
+    //   setTimeout(() => {
+    //     console.log('SHUTDOWN END')
+    //     resolve(true);
+    //   }, 2000);
+    // });
+  }
 }
