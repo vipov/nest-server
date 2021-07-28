@@ -9,10 +9,11 @@ const expressAdapter = new ExpressAdapter(expressApp);
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, expressAdapter);
-
-  app.enableShutdownHooks();
   
   const config: ConfigService = app.get(ConfigService);
+
+  app.enableShutdownHooks();
+  app.useStaticAssets(config.STORAGE_ASSETS);
 
   // SWAGGER SETUP
   const swaggerConfig = new DocumentBuilder()
