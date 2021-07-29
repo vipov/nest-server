@@ -1,10 +1,13 @@
-import { Body, Controller, Get, NotFoundException, Param, Post, Render, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Post, Render, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { access } from 'fs';
 import { join } from 'path';
 import { ConfigService } from '../../config';
+import { Auth } from '../../users/decorators/auth.decorator';
+import { User } from '../../users/entities';
+import { JwtAuthGuard } from '../../users/guards/jwt-auth.guard';
 import { PhotosService } from '../services/photos.service';
 
 export class FileUploadDto {
@@ -28,9 +31,11 @@ export class PhotosController {
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({type: FileUploadDto})
-  async upload(@UploadedFile() file: Express.Multer.File, @Body() data: FileUploadDto) {
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async upload(@UploadedFile() file: Express.Multer.File, @Body() data: FileUploadDto, @Auth() user: User) {
     
-    const photo = await this.photsService.create(file);
+    const photo = await this.photsService.create(file, user);
     const thumbs = await this.photsService.createThumbs(photo.filename);
 
     return { photo, thumbs, file, data }

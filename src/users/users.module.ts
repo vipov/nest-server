@@ -11,6 +11,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { UserExceptionFilter } from './filters/user-exception.filter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role, User } from './entities';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -46,7 +47,7 @@ import { Role, User } from './entities';
       }
     }
   ],
-  exports: [UsersService],
+  exports: [UsersService, AuthService],
 })
 export class UsersModule implements NestModule {
 

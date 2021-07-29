@@ -10,6 +10,7 @@ import * as sharp from 'sharp';
 import { Photo } from '../entities';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../../users/entities';
 
 @Injectable()
 export class PhotosService {
@@ -21,7 +22,7 @@ export class PhotosService {
     private photosRepository: Repository<Photo>
   ) {}
 
-  async create(file: Express.Multer.File) {
+  async create(file: Express.Multer.File, user: User) {
 
     const ext = extname(file.originalname).toLocaleLowerCase()
 
@@ -34,6 +35,7 @@ export class PhotosService {
     const photo = new Photo();
     photo.filename = filename;
     photo.description = file.originalname;
+    photo.user = user;
 
     await this.photosRepository.save(photo);
 
