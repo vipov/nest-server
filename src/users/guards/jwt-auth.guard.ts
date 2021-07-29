@@ -38,7 +38,7 @@ export class JwtAuthGuard implements CanActivate {
       return true;
     }
 
-    const userRoles = request.payload.user.roles.map(role => role.name);
+    const userRoles = request.payload.user?.roles?.map(role => role.name) || [];
 
     return requiredRoles.some(role => userRoles.includes(role));
   }

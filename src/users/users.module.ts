@@ -9,10 +9,13 @@ import { ConfigModule, ConfigService } from '../config';
 import { LOGGER_SCOPE } from './LOGGER_SCOPE';
 import { APP_FILTER } from '@nestjs/core';
 import { UserExceptionFilter } from './filters/user-exception.filter';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Role, User } from './entities';
 
 @Module({
   imports: [
     ConfigModule,
+    TypeOrmModule.forFeature([User, Role]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
