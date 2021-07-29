@@ -1,16 +1,42 @@
 import { Injectable, OnApplicationShutdown, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { IsBoolean, IsEnum, IsFQDN, IsNotEmpty, IsNumber, isString, IsString, validate } from 'class-validator';
 import { statSync, mkdirSync } from 'fs';
 import { resolve } from 'path';
 
 export const joinUrl = (...paths) => paths.join('/');
 
+export enum Env {
+  Development = 'development',
+  Production = 'production',
+  Test = 'test',
+}
+
 @Injectable()
 export class ConfigService implements OnModuleInit, OnModuleDestroy, OnApplicationShutdown {
 
+  @IsEnum(Env)
+  @IsNotEmpty()
+  readonly ENV = process.env.NODE_ENV
+
+  @IsBoolean()
+  @IsNotEmpty()
   readonly DEBUG = process.env.DEBUG === 'true';
+
+  @IsNumber()
+  @IsNotEmpty()
   readonly PORT = parseInt(process.env.PORT, 10);
+
+  // @IsFQDN()
+  @IsString()  
+  @IsNotEmpty()
   readonly DOMAIN = process.env.DOMAIN;
+   
+  @IsString()
+  @IsNotEmpty()
   readonly STORAGE_DIR = resolve(process.env.STORAGE_DIR);
+  
+  @IsString()
+  @IsNotEmpty()
   readonly JWT_SECRET = process.env.JWT_SECRET;
 
   // photos
@@ -27,8 +53,16 @@ export class ConfigService implements OnModuleInit, OnModuleDestroy, OnApplicati
   // DB
   readonly DB_NAME = resolve(this.STORAGE_DIR, 'db.sql');
 
+  private async validate() {
+    const errors = await validate(this, {});
+    if(errors.length > 0) {
+      throw new Error(errors.toString())
+    }
+  }
 
   async onModuleInit() {
+
+    await this.validate();
     
     statSync(this.STORAGE_DIR);
     mkdirSync(this.STORAGE_TMP, {recursive: true});
