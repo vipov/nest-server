@@ -1,85 +1,65 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from '../dto';
 import { User, Role, Roles } from '../entities';
 
 @Injectable()
 export class UsersService {
 
-  private roles: Role[] = [
-    new Role({id:1, name: Roles.ROOT}),
-    new Role({id:2, name: Roles.ADMIN}),
-  ];
-
-  private users: User[] = [
-    new User({
-      id: 1, 
-      name: 'Piotr', 
-      email: 'piotr@myflow.pl',
-      password: '123',
-      roles: [this.roles[0]]
-    }),
-    new User({
-      id: 2, 
-      name: 'Paweł', 
-      email: 'pawel@myflow.pl',
-      password: '123',
-      roles: [this.roles[1]]
-    }),
-  ]
-
-
   async create(createUserDto: CreateUserDto): Promise<User> {
 
-    const user = new User({
-      ...createUserDto,
-      id: this.users.length + 1,
-    });
+    //TODO pobrać to jako parametr wejściowy tej metody
+    let role = await Role.findOne({name: Roles.ADMIN})
 
-    this.users.push(user);
+    //TODO przenieść do migracji
+    if(!role) {
+      role = Role.create({name: Roles.ADMIN});
+      await Role.save(role);
+    }
+
+    const user = User.create(createUserDto);
+
+    user.roles = [role];
+
+    await User.save(user);
 
     return user;
   }
 
   async findBy(query: Partial<User>): Promise<User[]> {
-    return [
-      ...this.users.filter(user => user.email === query.email),
-      ...this.users.filter(user => user.id === query.id),
-    ];
+    return User.find(query);
   }
 
   async findAll(searchString?: string): Promise<User[]> {
-    let users = this.users;
-    if (searchString) {
-      const queryReg = new RegExp(searchString, 'i');
-      const findFn = (row) =>
-        row.name.search(queryReg) >= 0 || row.email.search(queryReg) >= 0;
-      users = this.users.filter(findFn);
-    }
-
-    return users;
+    //TODO użyć buildera by wyszukać po stringu
+    return User.find();
   }
 
   async findOne(id: number): Promise<User | null> {
-    return this.users.find((q) => q.id === id);
+    return User.findOne(id);
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    for (let i = 0; i < this.users.length; i++) {
-      const user = this.users[i];
-      if (user.id === id) {
-        this.users[i] = new User({
-          ...user,
-          ...updateUserDto,
-          id
-        });
-        return this.users[i];
-      }
-    }
-    return null;
+
+    return User.update({id}, updateUserDto).then(res => res.raw);
+
+    // const updated = await User.createQueryBuilder()
+    // .update(updateUserDto)
+    // .where({id})
+    // .execute()
+
+    // return updated.raw;
   }
 
   async remove(id: number): Promise<boolean> {
-    this.users = this.users.filter((user) => user.id !== id);
+
+    const user = await User.findOne(id);
+
+    if(!user) {
+      throw new NotFoundException("user not found");
+    }
+
+    await user.remove();
+
     return true;
   }
 }
