@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Render } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import { ConfigService } from './config';
@@ -21,6 +21,10 @@ export class AppController {
     //
     return this.appService.getHello();
   }
-}
 
-// /
+  @Get('chat')
+  @Render('chat')
+  chat() {
+    
+  }
+}
