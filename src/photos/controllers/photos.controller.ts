@@ -1,4 +1,5 @@
 import { Body, Controller, ForbiddenException, Get, NotFoundException, Param, Post, Render, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Client, Transport, ClientProxy } from '@nestjs/microservices';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -23,6 +24,10 @@ export class FileUploadDto {
 @Controller('photos')
 export class PhotosController {
 
+  
+  @Client({transport: Transport.TCP, options: {port: 3001}})
+  client: ClientProxy;
+  
   constructor(
     private config: ConfigService,
     private photsService: PhotosService,
@@ -37,7 +42,9 @@ export class PhotosController {
   async upload(@UploadedFile() file: Express.Multer.File, @Body() data: FileUploadDto, @Auth() user: User) {
     
     const photo = await this.photsService.create(file, user, data);
-    const thumbs = await this.photsService.createThumbs(photo.filename);
+    // const thumbs = await this.photsService.createThumbs(photo.filename);
+
+    const thumbs = await this.client.send('create_thumbs', photo.filename).toPromise();
 
     return { photo, thumbs, file, data }
   }

@@ -8,8 +8,9 @@ import { PhotosController } from './controllers/photos.controller';
 import { Photo } from './entities';
 import { PhotosService } from './services/photos.service';
 
-@Module({
+@Module({ 
   imports: [
+    DbModule,
     UsersModule,
     TypeOrmModule.forFeature([Photo]),
     ConfigModule,
@@ -22,6 +23,7 @@ import { PhotosService } from './services/photos.service';
     })
   ],
   controllers: [PhotosController],
-  providers: [PhotosService]
+  providers: [PhotosService],
+  exports: [PhotosService],
 })
 export class PhotosModule {}
