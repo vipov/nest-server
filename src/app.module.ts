@@ -8,7 +8,7 @@ import { DbModule } from './db/db.module';
 import { ChatGateway } from './gateways/chat.gateway';
 
 @Module({
-  imports: [UsersModule, ConfigModule, PhotosModule, DbModule],
+  imports: [UsersModule, ConfigModule, PhotosModule, DbModule,],
   controllers: [AppController],
   providers: [AppService, ChatGateway],
   exports: [],
