@@ -18,6 +18,8 @@ export class AuthController {
   @Post('register')
   async register(@Body() data: AuthRegisterDto): Promise<AuthRegisterResponse> {
 
+    data.password = await this.authService.encodePassword(data.password);
+
     const user = await this.usersService.create(data);
 
     return { user }

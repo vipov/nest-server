@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthLoginResponse } from '../dto';
 import { RequestPayload, TokenPayload, User } from '../entities';
 import { UsersService } from './users.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -13,16 +14,15 @@ export class AuthService {
   ) {}
 
   async encodePassword(password: string) {
-    return password; //TODO dodać hashowanie
+    const saltOrROunds = 10;
+    return bcrypt.hash(password, saltOrROunds);
   }
 
   async findByCredentials(email: string, password: string): Promise<User | null> {
 
     const [user] = await this.usersService.findBy({email});
 
-    const passwordHash = await this.encodePassword(password);
-
-    if (user && user.password === passwordHash) {
+    if (user && await bcrypt.compare(password, user.password)) {
       const { password, ...result } = user;
       return new User(result);
     }
