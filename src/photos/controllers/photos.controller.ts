@@ -1,4 +1,4 @@
-import { Body, Controller, Get, NotFoundException, Param, Post, Render, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Get, NotFoundException, Param, Post, Render, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -8,6 +8,7 @@ import { ConfigService } from '../../config';
 import { Auth } from '../../users/decorators/auth.decorator';
 import { User } from '../../users/entities';
 import { JwtAuthGuard } from '../../users/guards/jwt-auth.guard';
+import { Photo } from '../entities';
 import { PhotosService } from '../services/photos.service';
 
 export class FileUploadDto {
@@ -54,9 +55,21 @@ export class PhotosController {
   }
 
   @Get('download/:filename')
-  async download(@Param('filename') filename: string, @Res() res: Response) {
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async download(@Param('filename') filename: string, @Res() res: Response, @Auth() user: User) {
 
-    const file = join(this.config.STORAGE_PHOTOS, filename)
+    const photo = await this.photsService.findByFilename(filename);
+
+    if(!photo) {
+      throw new NotFoundException(`Photo "${filename}" not found`);
+    }
+
+    if(photo?.user.id !== user.id) {
+      throw new ForbiddenException('Sorry! It is not your photo');
+    }
+
+    const file = join(this.config.STORAGE_PHOTOS, filename);
 
     access(file, err => {
 

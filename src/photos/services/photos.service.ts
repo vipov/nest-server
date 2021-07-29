@@ -70,4 +70,8 @@ export class PhotosService {
       downloadUrl: joinUrl(this.config.PHOTOS_DOWNLOAD_PATH, photo.filename),
     }));
   }
+
+  async findByFilename(filename: string) {
+    return this.photosRepository.findOne({filename});
+  }
 }
