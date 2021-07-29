@@ -10,6 +10,9 @@ export class Photo {
   filename: string;
 
   @Column('text', { nullable: true })
+  originalname?: string;
+
+  @Column('text', { nullable: true })
   description?: string;
 
   @ManyToOne(type => User, {eager: true})

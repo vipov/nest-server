@@ -11,6 +11,7 @@ import { Photo } from '../entities';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../users/entities';
+import { FileUploadDto } from '../controllers/photos.controller';
 
 @Injectable()
 export class PhotosService {
@@ -22,7 +23,7 @@ export class PhotosService {
     private photosRepository: Repository<Photo>
   ) {}
 
-  async create(file: Express.Multer.File, user: User) {
+  async create(file: Express.Multer.File, user: User, data: FileUploadDto) {
 
     const ext = extname(file.originalname).toLocaleLowerCase()
 
@@ -34,7 +35,8 @@ export class PhotosService {
 
     const photo = new Photo();
     photo.filename = filename;
-    photo.description = file.originalname;
+    photo.originalname = file.originalname;
+    photo.description = data.description;
     photo.user = user;
 
     await this.photosRepository.save(photo);

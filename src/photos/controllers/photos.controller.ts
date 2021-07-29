@@ -36,7 +36,7 @@ export class PhotosController {
   @ApiBearerAuth()
   async upload(@UploadedFile() file: Express.Multer.File, @Body() data: FileUploadDto, @Auth() user: User) {
     
-    const photo = await this.photsService.create(file, user);
+    const photo = await this.photsService.create(file, user, data);
     const thumbs = await this.photsService.createThumbs(photo.filename);
 
     return { photo, thumbs, file, data }

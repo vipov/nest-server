@@ -12,7 +12,7 @@ import { ConfigModule, ConfigService } from '../config';
         type: 'sqlite',
         database: config.DB_NAME,
         entities: [resolve(__dirname, '..') + '/**/*.entity{.ts,.js}'],
-        synchronize: true,
+        // synchronize: true,
       })
     })
   ],

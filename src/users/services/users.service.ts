@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from '../dto';
 import { User, Role, Roles } from '../entities';
 
@@ -10,10 +10,8 @@ export class UsersService {
     //TODO pobrać to jako parametr wejściowy tej metody
     let role = await Role.findOne({name: Roles.ADMIN})
 
-    //TODO przenieść do migracji
     if(!role) {
-      role = Role.create({name: Roles.ADMIN});
-      await Role.save(role);
+      throw new BadRequestException("role not found")
     }
 
     const user = User.create(createUserDto);
