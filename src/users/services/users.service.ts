@@ -6,17 +6,18 @@ import { User, Role, Roles } from '../entities';
 export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-
-    //TODO pobrać to jako parametr wejściowy tej metody
-    let role = await Role.findOne({name: Roles.ADMIN})
-
-    if(!role) {
-      throw new BadRequestException("role not found")
-    }
-
+    
     const user = User.create(createUserDto);
 
-    user.roles = [role];
+    if(createUserDto.partner) {
+      let role = await Role.findOne({name: Roles.PARTNER})
+  
+      if(!role) {
+        throw new BadRequestException("Partner role not found")
+      }
+      
+      user.roles = [role];
+    }
 
     await User.save(user);
 

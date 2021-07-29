@@ -10,6 +10,9 @@ export class CreateUserDto {
 
   @ApiProperty({example: '123', description: 'password min 3 chars'})
   password: string;
+
+  @ApiProperty({example: 1})
+  partner: number;
 }
 
 export class CreateUserResponse {

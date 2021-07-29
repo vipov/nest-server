@@ -4,6 +4,7 @@ import { BaseEntity, Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColu
 export enum Roles {
   ADMIN = 'admin',
   ROOT = 'root',
+  PARTNER = 'partner',
 }
 
 @Entity()

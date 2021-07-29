@@ -39,6 +39,9 @@ export class AuthRegisterDto {
 
   @ApiProperty({example: '123'})
   password: string;
+  
+  @ApiProperty({example: 1})
+  partner: number;
 }
 
 export class AuthRegisterResponse {
