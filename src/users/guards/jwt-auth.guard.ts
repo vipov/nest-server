@@ -43,10 +43,16 @@ export class JwtAuthGuard implements CanActivate {
     return requiredRoles.some(role => userRoles.includes(role));
   }
 
-  extractToken(request) {
+  extractToken(request: Request) {
 
-    const token = request.headers['authorization'];
+    let token = request.headers['authorization'];
 
-    return (token) ? token.replace('Bearer ', '') : '';
+    token = (token) ? token.replace('Bearer ', '') : '';
+
+    if(!token && request.query.token) {
+      return request.query.token + '';
+    }
+
+    return token;
   }
 }
