@@ -1,5 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
+import { AppApi } from '../app-client';
 import { PhotosService } from '../photos/services/photos.service';
 
 @Controller('worker')
@@ -7,6 +8,7 @@ export class WorkerController {
 
   constructor(
     private photosService: PhotosService,
+    private appApi: AppApi
   ) {}
 
   @MessagePattern('sum')
@@ -20,6 +22,8 @@ export class WorkerController {
     console.log('create thumbs', filename);
     
     const thumbs = await this.photosService.createThumbs(filename);
+
+    this.appApi.notify(`Thumb "${filename}" was created`);
 
     return thumbs;
     

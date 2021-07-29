@@ -28,4 +28,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log('chatToServer', chatMessage)
     this.server.emit('chatToClient', chatMessage);
   }
+
+  notify(message: string) {
+    this.server.emit('chatToClient', {message})
+  }
 }

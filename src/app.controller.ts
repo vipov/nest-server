@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigService } from './config';
 import { UsersService } from './users/services';
 import { Client, ClientProxy, Transport } from "@nestjs/microservices";
+import { ChatGateway } from './gateways/chat.gateway';
 
 @ApiTags('app')
 @Controller()
@@ -16,6 +17,7 @@ export class AppController {
     private readonly appService: AppService,
     private usersService: UsersService,
     private config: ConfigService,
+    private chatGateway: ChatGateway,
     ) {
       // console.log('CONFIG', config);
     }
@@ -37,5 +39,13 @@ export class AppController {
     const numbers = data.split(',').map(v => +v);
 
     return this.client.send('sum', numbers);
+  }
+
+  @Get('notify')
+  notify(@Query('message') message: string) {
+    
+    this.chatGateway.notify(message);
+
+    return {success: true};
   }
 }
