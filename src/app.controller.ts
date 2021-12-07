@@ -14,7 +14,7 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    console.log('USER SERVICE', this.userService);
+    // console.log('USER SERVICE', this.userService);
     return this.appService.getHello();
   }
 }

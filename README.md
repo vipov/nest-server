@@ -1,3 +1,32 @@
+# Zadania
+
+## Zadanie 2
+
+1. zrobic kontroler w src/users/controllers
+   - users-admin => users-admin.controller.
+2. dodac dodawanie  i usuwanie ról
+   - addRole => POST: /users/admin/user/:userId/role/:roleName
+   - removeRole => DELETE: /users/admin/user/:userId/role/:roleName
+3. użyć UsersService gdzie dodamy 2 nowe metody
+   - addRole(userId: number, roleName: string)
+   - removeRole(userId: number, roleName: string)
+
+
+# NestJS
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </p>

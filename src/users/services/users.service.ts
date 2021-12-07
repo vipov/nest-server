@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from '../dto/user.dto';
 import { User, UserRole, UserRoleName } from '../entities/user.entity';
 
@@ -26,6 +26,19 @@ export class UsersService {
       roles: [this.roles[1]]
     }),
   ]
+
+  async addRole(userId: number, roleName: UserRoleName): Promise<User> {
+    const user = await this.findOne(userId);
+    const role = this.roles.find(role => role.name === roleName);
+    user.roles.push(role);
+    return user;
+  }
+  
+  async removeRole(userId: number, roleName: UserRoleName): Promise<User> {
+    const user = await this.findOne(userId);
+    user.roles = user.roles.filter(role => role.name !== roleName);
+    return user;
+  }
 
 
   async create(createUserDto: CreateUserDto): Promise<User> {
