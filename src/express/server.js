@@ -32,4 +32,6 @@ app.get('/users/:userId/books/:bookId', function (req, res) {
 
 exports.expressApp = app;
 
+exports.debuggerService = {};
+
 // app.listen(3000, () => console.log(`Example app listening on port 3000!`));

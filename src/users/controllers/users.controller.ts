@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, NotFoundException, Param, Patch, Post, Query } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersErrorDto } from '../dto/error.dto';
 import { CreateUserDto, RemoveUserResponse, UpdateUserDto } from '../dto/user.dto';
 import { User } from '../entities/user.entity';
 import { UsersService } from '../services/users.service';
+// import { DEBUG, Debug } from '../users.module';
 
 @Controller('users')
 @ApiTags('Users')
@@ -15,8 +17,13 @@ import { UsersService } from '../services/users.service';
 export class UsersController {
   
   constructor(
-    private usersService: UsersService
-  ) {}
+    private usersService: UsersService,
+    private moduleRef: ModuleRef,
+    // @Inject(DEBUG) 
+    // private debug: Debug,
+  ) {
+    // moduleRef.get()
+  }
 
   @Get()
   @ApiQuery({

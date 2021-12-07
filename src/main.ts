@@ -11,6 +11,7 @@ import {
   SwaggerDocumentOptions,
   SwaggerCustomOptions,
 } from '@nestjs/swagger';
+import { UsersController } from './users/controllers/users.controller';
 
 const expressAdapter = new ExpressAdapter(expressApp);
 
@@ -19,6 +20,9 @@ async function bootstrap() {
     AppModule,
     expressAdapter,
   );
+
+  // const ctrl = app.get(UsersController);
+  // console.log('USER CTRL', ctrl)
 
   // SWAGGER SETUP
   const config = new DocumentBuilder()
