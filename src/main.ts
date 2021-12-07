@@ -11,7 +11,7 @@ import {
   SwaggerDocumentOptions,
   SwaggerCustomOptions,
 } from '@nestjs/swagger';
-import { UsersController } from './users/controllers/users.controller';
+import { ConfigService } from './config';
 
 const expressAdapter = new ExpressAdapter(expressApp);
 
@@ -21,8 +21,7 @@ async function bootstrap() {
     expressAdapter,
   );
 
-  // const ctrl = app.get(UsersController);
-  // console.log('USER CTRL', ctrl)
+  const configService = app.get(ConfigService);
 
   // SWAGGER SETUP
   const config = new DocumentBuilder()
@@ -44,6 +43,6 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document, customOptions);
   // END OF SWAGGER SETUP
 
-  await app.listen(3000);
+  await app.listen(configService.PORT);
 }
 bootstrap();
