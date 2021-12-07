@@ -18,3 +18,8 @@ export class UpdateUserDto {
 export class UpdateUserResponse {
   user: User
 }
+
+export class RemoveUserResponse {
+  status: 'error' | 'success';
+  removedId: number;
+}
