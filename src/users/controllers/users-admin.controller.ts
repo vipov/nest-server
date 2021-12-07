@@ -2,6 +2,7 @@ import { Controller, Delete, Param, Post, Req, UseGuards } from '@nestjs/common'
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { Payload } from '../decorators/payload.decorator';
+import { Roles } from '../decorators/roles.decorator';
 import { User, UserRoleName } from '../entities/user.entity';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { UsersService } from '../services/users.service';
@@ -9,6 +10,7 @@ import { UsersService } from '../services/users.service';
 @Controller('users/admin')
 @ApiTags('UsersAdmin')
 @UseGuards(JwtAuthGuard)
+@Roles(UserRoleName.ROOT)
 export class UsersAdminController {
 
   constructor(
