@@ -1,9 +1,10 @@
 import { Controller, Delete, Param, Post } from '@nestjs/common';
-import { ApiParam } from '@nestjs/swagger';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { UserRoleName } from '../entities/user.entity';
 import { UsersService } from '../services/users.service';
 
 @Controller('users/admin')
+@ApiTags('UsersAdmin')
 export class UsersAdminController {
 
   constructor(
@@ -12,7 +13,7 @@ export class UsersAdminController {
 
   @Post('user/:userId/role/:roleName')
   @ApiParam({name: 'roleName', enum: UserRoleName})
-  addRole(@Param('userId') userId: number, @Param('roleName') roleName: UserRoleName) {
+  addRole(@Param('userId') userId: string, @Param('roleName') roleName: UserRoleName) {
 
     return this.usersService.addRole(+userId, roleName);
 
@@ -20,7 +21,7 @@ export class UsersAdminController {
 
   @Delete('user/:userId/role/:roleName')
   @ApiParam({name: 'roleName', enum: UserRoleName})
-  removeRole(@Param('userId') userId: number, @Param('roleName') roleName: UserRoleName) {
+  removeRole(@Param('userId') userId: string, @Param('roleName') roleName: UserRoleName) {
 
     return this.usersService.removeRole(+userId, roleName);
 
