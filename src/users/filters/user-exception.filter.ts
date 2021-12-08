@@ -1,7 +1,8 @@
-import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '../../config';
 
 @Catch()
+// @Catch(InternalServerErrorException, NotFoundException)
 export class UserExceptionFilter<T> implements ExceptionFilter {
 
   constructor(
