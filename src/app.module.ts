@@ -5,9 +5,10 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from './config/config.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PerformanceInterceptor } from './users/interceptors/performance.interceptor';
+import { PhotosModule } from './photos/photos.module';
 
 @Module({
-  imports: [UsersModule, ConfigModule],
+  imports: [UsersModule, ConfigModule, PhotosModule],
   controllers: [AppController],
   providers: [
     AppService,
