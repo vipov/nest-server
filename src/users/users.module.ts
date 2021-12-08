@@ -14,6 +14,7 @@ export const DEBUG = 'debugger'
 
 @Module({
   imports: [
+    ConfigModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
