@@ -40,7 +40,6 @@ export class AuthService {
   async decodeUserToken(token: string): Promise<RequestPayload | null> {
 
     const payload: TokenPayload = this.jwtService.verify(token);
-
     const [user] = await this.usersService.findBy({id: payload.sub});
 
     return user ? {user, token} : null;

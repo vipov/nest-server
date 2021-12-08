@@ -1,6 +1,9 @@
-import { Body, Controller, HttpException, HttpStatus, Post, UnauthorizedException } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Auth } from '../decorators/auth.decorator';
 import { AuthLoginDto, AuthLoginResponse, AuthRegisterDto, AuthRegisterResponse } from '../dto/auth.dto';
+import { User } from '../entities/user.entity';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AuthService } from '../services/auth.service';
 import { UsersService } from '../services/users.service';
 
@@ -39,6 +42,16 @@ export class AuthController {
     const token = await this.authService.encodeUserToken(user);
 
     return {token, user};
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  me(@Auth() user: User) {
+    // TODO tu mozesz zrobic coś, co wymaga zalogowanego usera
+    return {
+      user
+    }
   }
   
 }

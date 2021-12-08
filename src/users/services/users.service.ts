@@ -21,7 +21,7 @@ export class UsersService {
     new User({
       id: 2, 
       name: 'Paweł', 
-      email: 'piotr@myflow.pl',
+      email: 'pawel@myflow.pl',
       password: '123',
       roles: [this.roles[1]]
     }),

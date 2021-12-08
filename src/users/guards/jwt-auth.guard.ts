@@ -2,27 +2,29 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { RequestPayload, User, UserRoleName } from '../entities/user.entity';
+import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
 
   constructor(
-    private reflector: Reflector
+    private reflector: Reflector,
+    private authService: AuthService,
   ) {}
 
-  canActivate(
+  async canActivate(
     context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  ): Promise<boolean> {
+    
     const request = context.switchToHttp().getRequest();
 
-    // TODO pobieramy api token z headers i go validujemy
+    const token = this.extractToken(request);
 
-    request.payload = {
-      user: new User({
-        name: 'Tymczasowy User',
-        roles: [{id: 1, name: UserRoleName.ADMIN}]
-      }),
-    } as RequestPayload;
+    if(!token) {
+      return false;
+    }
+
+    request.payload = await this.authService.decodeUserToken(token);
 
     if(!request.payload) {
       return false;
@@ -37,5 +39,11 @@ export class JwtAuthGuard implements CanActivate {
     const userRoles: UserRoleName[] = request.payload.user.roles.map(role => role.name);
 
     return requiredRoles.some(role => userRoles.includes(role));
+  }
+
+  extractToken(request): string {
+    let token = request.headers['authorization'];
+
+    return token ? token.replace('Bearer ', '') : '';
   }
 }
