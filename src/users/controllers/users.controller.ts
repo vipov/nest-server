@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Inject, NotFoundException, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, NotFoundException, Param, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersErrorDto } from '../dto/error.dto';
 import { CreateUserDto, RemoveUserResponse, UpdateUserDto } from '../dto/user.dto';
 import { User } from '../entities/user.entity';
+import { UserByIdPipe } from '../pipes/user-by-id.pipe';
 import { UsersService } from '../services/users.service';
 // import { DEBUG, Debug } from '../users.module';
 
@@ -41,9 +42,9 @@ export class UsersController {
     description: 'Id nie znalezione w bazie',
     type: UsersErrorDto
   })
-  async findOne(@Param('id') id: string): Promise<User> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
 
-    const user = await this.usersService.findOne(+id);
+    const user = await this.usersService.findOne(id);
 
     if(!user) {
       throw new NotFoundException(`User o id ${id} nie został znaleziony`)
@@ -58,8 +59,9 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+
+  update(@Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) updateUserDto: UpdateUserDto) {
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
@@ -69,6 +71,14 @@ export class UsersController {
     return {
       status: status ? 'success' : 'error',
       removedId: id,
+    }
+  }
+
+  @Get('name/:id')
+  @ApiParam({name: 'id', type: Number})
+  getUserName(@Param('id', UserByIdPipe) user: User) {
+    return {
+      user
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, UnauthorizedException, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { AuthLoginDto, AuthLoginResponse, AuthRegisterDto, AuthRegisterResponse } from '../dto/auth.dto';
@@ -9,6 +9,7 @@ import { UsersService } from '../services/users.service';
 
 @Controller('auth')
 @ApiTags('Auth')
+@UsePipes(new ValidationPipe({transform: true})) 
 export class AuthController {
 
   constructor(
@@ -31,6 +32,13 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() credentials: AuthLoginDto): Promise<AuthLoginResponse> {
+
+    console.log('DTO',
+      credentials, 
+      credentials.createdAt.getTime(), 
+      credentials instanceof AuthLoginDto , 
+      credentials.getName()
+    );
 
     const user = await this.authService.findByCredentials(credentials.email, credentials.password);
 
