@@ -3,10 +3,18 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from './config/config.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { PerformanceInterceptor } from './users/interceptors/performance.interceptor';
 
 @Module({
   imports: [UsersModule, ConfigModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: PerformanceInterceptor
+    }
+  ],
 })
 export class AppModule {}

@@ -1,5 +1,6 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, UnauthorizedException, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, HttpException, HttpStatus, Post, UnauthorizedException, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Observable, of, switchMap, timeout } from 'rxjs';
 import { Auth } from '../decorators/auth.decorator';
 import { AuthLoginDto, AuthLoginResponse, AuthRegisterDto, AuthRegisterResponse } from '../dto/auth.dto';
 import { User } from '../entities/user.entity';
@@ -55,11 +56,14 @@ export class AuthController {
   @Get('me')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @UseInterceptors(ClassSerializerInterceptor)
   me(@Auth() user: User) {
     // TODO tu mozesz zrobic coś, co wymaga zalogowanego usera
-    return {
-      user
-    }
+    return user;
+
+    // return of(1).pipe(
+    //   switchMap(() => this.authService.getUsers())
+    // )
   }
   
 }
