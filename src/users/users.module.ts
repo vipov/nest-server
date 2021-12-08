@@ -7,6 +7,7 @@ import { UsersAdminController } from './controllers/users-admin.controller';
 import { debuggerService } from "../express/server";
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '../config';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 export const DEBUG = 'debugger'
 
@@ -52,6 +53,6 @@ export const DEBUG = 'debugger'
     // },
     AuthService,
   ],
-  exports: [UsersService],
+  exports: [UsersService, AuthService],
 })
 export class UsersModule {}
