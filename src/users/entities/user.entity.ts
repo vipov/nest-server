@@ -1,4 +1,5 @@
 import { Exclude } from "class-transformer";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 export enum UserRoleName {
   ADMIN = 'admin',
@@ -12,22 +13,24 @@ export class UserRole {
   constructor(user: Partial<UserRole>){ Object.assign(this, user)}
 }
 
-export class User {
-  id?: number;
-  name: string;
-  email?: string;
+@Entity()
+export class User extends BaseEntity {
 
+  @PrimaryGeneratedColumn()
+  id?: number;
+
+  @Column()
+  name: string;
+
+  @Column()
+  email?: string;
+  
+  @Column()
   @Exclude({toPlainOnly: true})
   password?: string;
 
-  roles?: UserRole[];
+  roles?: UserRole[] = [];
 
-  constructor(user: Partial<User>){ 
-    if(!user.roles) {
-      user.roles = [];
-    }
-    Object.assign(this, user)
-  }
 }
 
 export class TokenPayload { 

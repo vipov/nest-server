@@ -4,12 +4,12 @@ import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
 import { User } from "../entities/user.entity";
 
 export class AuthLoginDto {
-  @ApiProperty({example: 'piotr@myflow.pl'})
+  @ApiProperty({example: 'justyna@myflow.pl'})
   @IsEmail()
   @IsNotEmpty()
   email: string;
 
-  @ApiProperty({example: '123'})
+  @ApiProperty({example: '!@#'})
   @MinLength(3)
   @IsString()
   password: string;

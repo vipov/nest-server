@@ -8,6 +8,8 @@ import { debuggerService } from "../express/server";
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '../config';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
 
 export const DEBUG = 'debugger'
 
@@ -16,6 +18,7 @@ export const DEBUG = 'debugger'
 @Module({
   imports: [
     ConfigModule,
+    TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
