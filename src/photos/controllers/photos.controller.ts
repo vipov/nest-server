@@ -39,7 +39,7 @@ export class PhotosController {
 
     const thumbs = await this.photosService.createThumbs(photo.filename);
 
-    return {file, body, thumbs};
+    return {photo, file, body, thumbs};
   }
 
   @Get('download/:filename')

@@ -34,12 +34,12 @@ export class AuthController {
   @Post('login')
   async login(@Body() credentials: AuthLoginDto): Promise<AuthLoginResponse> {
 
-    console.log('DTO',
-      credentials, 
-      credentials.createdAt.getTime(), 
-      credentials instanceof AuthLoginDto , 
-      credentials.getName()
-    );
+    // console.log('DTO',
+    //   credentials, 
+    //   credentials.createdAt.getTime(), 
+    //   credentials instanceof AuthLoginDto , 
+    //   credentials.getName()
+    // );
 
     const user = await this.authService.findByCredentials(credentials.email, credentials.password);
 

@@ -11,11 +11,11 @@ export class PerformanceInterceptor implements NestInterceptor {
     const close$ = fromEvent(request, 'close');
     request.close$ = close$;
 
-    console.time('Request duration')
+    // console.time('Request duration')
     return next.handle().pipe(
       // TODO mutate response
       // map(res => res),
-      tap(res => console.timeEnd('Request duration')),
+      // tap(res => console.timeEnd('Request duration')),
       takeUntil(close$),
     );
   }
