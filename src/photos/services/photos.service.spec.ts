@@ -15,7 +15,8 @@ describe('PhotosService', () => {
 
     const testConfigService = {
       STORAGE_PHOTOS: './storage/photos',
-      STORAGE_THUMBS: './storage/tmp'
+      STORAGE_THUMBS: './storage/assets/thumbs',
+      STORAGE_TMP: './storage/tmp',
     } as ConfigService
 
     const module: TestingModule = await Test.createTestingModule({

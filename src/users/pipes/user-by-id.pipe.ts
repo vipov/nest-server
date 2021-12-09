@@ -9,7 +9,7 @@ export class UserByIdPipe implements PipeTransform {
     private usersService: UsersService,
   ) {}
 
-  async transform(value: any, metadata: ArgumentMetadata): Promise<User> {
+  async transform(value: any): Promise<User> {
 
     const id = parseInt(value, 10);
 
