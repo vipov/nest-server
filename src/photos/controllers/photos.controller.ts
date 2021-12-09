@@ -33,9 +33,11 @@ export class PhotosController {
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({type: FileUploadDto})
-  async uploadFile(@UploadedFile() file: Express.Multer.File, @Body() body: any) {
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async uploadFile(@UploadedFile() file: Express.Multer.File, @Body() body: any, @Auth() user: User) {
 
-    const photo = await this.photosService.create(file);
+    const photo = await this.photosService.create(file, user);
 
     const thumbs = await this.photosService.createThumbs(photo.filename);
 

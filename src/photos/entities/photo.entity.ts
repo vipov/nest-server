@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 
 @Entity()
 export class Photo {
@@ -11,4 +12,7 @@ export class Photo {
 
   @Column('text', {nullable: true})
   description: string;
+
+  @ManyToOne(type => User, {eager: false})
+  user: User
 }

@@ -6,6 +6,7 @@ import { extname, join } from 'path';
 import * as sharp from 'sharp';
 import { Repository } from 'typeorm';
 import { ConfigService, joinUrl } from '../../config';
+import { User } from '../../users/entities/user.entity';
 import { Photo } from '../entities/photo.entity';
 
 @Injectable()
@@ -18,7 +19,7 @@ export class PhotosService {
     private photoRepository: Repository<Photo>
   ) {}
 
-  async create(file: Express.Multer.File) {
+  async create(file: Express.Multer.File, user: User) {
 
     const ext = extname(file.originalname).toLowerCase();
 
@@ -31,6 +32,7 @@ export class PhotosService {
     const photo = new Photo();
     photo.filename = filename;
     photo.description = file.originalname;
+    photo.user = user;
 
     await this.photoRepository.save(photo);
 
