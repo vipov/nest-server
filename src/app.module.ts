@@ -7,6 +7,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PerformanceInterceptor } from './users/interceptors/performance.interceptor';
 import { PhotosModule } from './photos/photos.module';
 import { DbModule } from './db/db.module';
+import { ChatGateway } from './gateways/chat.gateway';
 
 @Module({
   imports: [UsersModule, ConfigModule, PhotosModule, DbModule],
@@ -16,7 +17,8 @@ import { DbModule } from './db/db.module';
     {
       provide: APP_INTERCEPTOR,
       useClass: PerformanceInterceptor
-    }
+    },
+    ChatGateway
   ],
 })
 export class AppModule {}
