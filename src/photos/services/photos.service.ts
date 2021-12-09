@@ -1,15 +1,21 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { createHash } from 'crypto';
 import { readdir, rename } from 'fs/promises';
 import { extname, join } from 'path';
 import * as sharp from 'sharp';
+import { Repository } from 'typeorm';
 import { ConfigService, joinUrl } from '../../config';
+import { Photo } from '../entities/photo.entity';
 
 @Injectable()
 export class PhotosService {
 
   constructor(
     private config: ConfigService,
+
+    @InjectRepository(Photo)
+    private photoRepository: Repository<Photo>
   ) {}
 
   async create(file: Express.Multer.File) {
@@ -22,7 +28,13 @@ export class PhotosService {
 
     await rename(file.path, destFile);
 
-    return {filename}
+    const photo = new Photo();
+    photo.filename = filename;
+    photo.description = file.originalname;
+
+    await this.photoRepository.save(photo);
+
+    return photo;
   }
 
   async createThumbs(filename: string) {
