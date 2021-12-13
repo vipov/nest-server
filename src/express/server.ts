@@ -5,9 +5,9 @@ const app = express();
 
 const users = [];
 
-app.get('/', function (req: Request, res) {
-  res.send('Hello from Express.js');
-});
+// app.get('/', function (req: Request, res) {
+//   res.send('Hello from Express.js');
+// });
 
 app.get(
   '/user',
