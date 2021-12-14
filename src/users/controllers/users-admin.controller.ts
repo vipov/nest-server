@@ -1,4 +1,5 @@
 import {
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   ForbiddenException,
@@ -7,6 +8,7 @@ import {
   Param,
   Post,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
@@ -52,6 +54,7 @@ export class UsersAdminController {
   }
 
   @Get('me')
+  @UseInterceptors(ClassSerializerInterceptor)
   getMe(@Auth() user: User, @Payload('token') token: string) {
     return user;
   }

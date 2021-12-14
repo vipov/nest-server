@@ -1,4 +1,11 @@
-import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UnauthorizedException,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
   AuthLoginDto,
@@ -18,7 +25,9 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  async register(@Body() data: AuthRegisterDto): Promise<AuthRegisterResponse> {
+  async register(
+    @Body(new ValidationPipe({ transform: true })) data: AuthRegisterDto,
+  ): Promise<AuthRegisterResponse> {
     const user = await this.usersService.create({
       ...data,
       password: await this.authService.encodePassword(data.password),
@@ -28,6 +37,7 @@ export class AuthController {
   }
 
   @Post('login')
+  @UsePipes(ValidationPipe)
   async login(@Body() data: AuthLoginDto): Promise<AuthLoginResponse> {
     const user = await this.authService.validateUser(data.email, data.password);
 
