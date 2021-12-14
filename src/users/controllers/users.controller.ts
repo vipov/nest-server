@@ -75,6 +75,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @ApiParam({ name: 'id', type: Number })
   remove(@Param('id', UserByIdPipe) user: User) {
     return this.usersService.remove(user.id);
   }
