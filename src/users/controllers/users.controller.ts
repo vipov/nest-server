@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  UseFilters,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -21,6 +22,7 @@ import {
   UsersErrorResponse,
 } from '../dto/user.dto';
 import { User } from '../entities/user.entity';
+import { UserExceptionFilter } from '../filters/user-exception.filter';
 import { UserByIdPipe } from '../pipes/user-by-id.pipe';
 import { UsersService } from '../services/users.service';
 
@@ -32,6 +34,7 @@ import { UsersService } from '../services/users.service';
   description: 'upss... tego nie przewidzieliśmy',
 })
 @UseInterceptors(ClassSerializerInterceptor)
+@UseFilters(UserExceptionFilter)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
@@ -39,6 +42,9 @@ export class UsersController {
   @ApiQuery({ name: 'q', required: false })
   @ApiResponse({ status: 200, type: User, isArray: true })
   async findAll(@Query('q') q: string): Promise<User[]> {
+    if (q === 'err') {
+      throw new Error('TEST ERROR');
+    }
     return this.usersService.findAll(q);
   }
 

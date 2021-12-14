@@ -9,6 +9,7 @@ import { ConfigModule, ConfigService } from '../config';
 
 @Module({
   imports: [
+    ConfigModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
