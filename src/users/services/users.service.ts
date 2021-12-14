@@ -14,14 +14,14 @@ export class UsersService {
       id: 1,
       name: 'Piotr',
       email: 'piotr@myflow.pl',
-      password: '123',
+      password: '$2b$10$KsXDE0YargZytd49t1YyZeMhBG5evGY1OCU.wwDvuDLCz.EF0K.qq',
       roles: [this.roles[0]],
     }),
     new User({
       id: 2,
       name: 'Paweł',
-      email: 'piotr@myflow.pl',
-      password: '123',
+      email: 'pawel@myflow.pl',
+      password: '$2b$10$KsXDE0YargZytd49t1YyZeMhBG5evGY1OCU.wwDvuDLCz.EF0K.qq',
       roles: [this.roles[1]],
     }),
   ];

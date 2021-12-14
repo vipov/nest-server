@@ -20,6 +20,7 @@ import { UsersService } from '../services/users.service';
 @Controller('users-admin')
 @ApiTags('Users Admin')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class UsersAdminController {
   constructor(private usersService: UsersService) {}
 
@@ -51,7 +52,6 @@ export class UsersAdminController {
   }
 
   @Get('me')
-  @ApiBearerAuth()
   getMe(@Auth() user: User, @Payload('token') token: string) {
     return user;
   }
