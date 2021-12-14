@@ -3,7 +3,7 @@
 ## Zadanie 1
 
 1. zrobic kontroler w src/users/controllers
-   - users-admin => users-admin.controller.
+   - users-admin => users-admin.controller.ts
 2. dodac dodawanie  i usuwanie ról
    - addRole => POST: /users-admin/user/:userId/role/:roleName
    - removeRole => DELETE: /users-admin/user/:userId/role/:roleName
