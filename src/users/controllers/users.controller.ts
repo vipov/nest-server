@@ -1,13 +1,16 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
@@ -18,6 +21,7 @@ import {
   UsersErrorResponse,
 } from '../dto/user.dto';
 import { User } from '../entities/user.entity';
+import { UserByIdPipe } from '../pipes/user-by-id.pipe';
 import { UsersService } from '../services/users.service';
 
 @Controller('users')
@@ -27,6 +31,7 @@ import { UsersService } from '../services/users.service';
   type: UsersErrorResponse,
   description: 'upss... tego nie przewidzieliśmy',
 })
+@UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
@@ -40,8 +45,8 @@ export class UsersController {
   @Get(':id')
   @ApiResponse({ status: 200, type: User })
   @ApiResponse({ status: 404, type: UsersErrorResponse })
-  async findOne(@Param('id') id: string): Promise<User> {
-    const user = await this.usersService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    const user = await this.usersService.findOne(id);
 
     if (!user) {
       throw new NotFoundException(`User for "${id}" not found`);
@@ -70,7 +75,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  remove(@Param('id', UserByIdPipe) user: User) {
+    return this.usersService.remove(user.id);
   }
 }
