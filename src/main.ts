@@ -11,6 +11,7 @@ import {
   SwaggerDocumentOptions,
   SwaggerCustomOptions,
 } from '@nestjs/swagger';
+import { ConfigService } from './config';
 
 const expressAdapter = new ExpressAdapter(expressApp);
 
@@ -19,6 +20,8 @@ async function bootstrap() {
     AppModule,
     expressAdapter,
   );
+
+  const config = app.get(ConfigService);
 
   // SWAGGER SETUP
   const swaggerConfig = new DocumentBuilder()
@@ -40,6 +43,6 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document, customOptions);
   // END OF SWAGGER SETUP
 
-  await app.listen(3000);
+  await app.listen(config.PORT);
 }
 bootstrap();
