@@ -3,24 +3,22 @@ import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { User, UserRoleName } from '../entities/user.entity';
+import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private reflector: Reflector, private authService: AuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
 
-    // TODO odczytac jwt token z request.headers i zwalidowac ten token
+    const token = this.extractToken(request);
 
-    // po prozkodawniu przypisac do request.payload info o sesji
-    request.payload = {
-      token: '',
-      user: new User({
-        id: 1,
-        roles: [{ id: 1, name: UserRoleName.ADMIN }],
-      }),
-    };
+    if (!token) {
+      return false;
+    }
+
+    request.payload = await this.authService.decodeUserToken(token);
 
     if (!request.payload) {
       return false;
@@ -31,10 +29,20 @@ export class JwtAuthGuard implements CanActivate {
       [context.getClass(), context.getHandler()],
     );
 
+    if (!requiredRoles) {
+      return true;
+    }
+
     const userRoles: UserRoleName[] = request.payload.user.roles.map(
       (role) => role.name,
     );
 
     return !!requiredRoles.some((role) => userRoles.includes(role));
+  }
+
+  extractToken(request: Request) {
+    const token = request.headers['authorization'] as string;
+
+    return token ? token.replace('Bearer ', '') : '';
   }
 }

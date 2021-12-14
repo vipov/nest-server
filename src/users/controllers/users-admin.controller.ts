@@ -8,7 +8,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { Payload } from '../decorators/payload.decorator';
 import { Roles } from '../decorators/roles.decorator';
@@ -51,6 +51,7 @@ export class UsersAdminController {
   }
 
   @Get('me')
+  @ApiBearerAuth()
   getMe(@Auth() user: User, @Payload('token') token: string) {
     return user;
   }
