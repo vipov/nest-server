@@ -1,18 +1,26 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
+  Get,
   Post,
   UnauthorizedException,
+  UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Auth } from '../decorators/auth.decorator';
+import { Payload } from '../decorators/payload.decorator';
 import {
   AuthLoginDto,
   AuthLoginResponse,
   AuthRegisterDto,
   AuthRegisterResponse,
 } from '../dto/auth.dto';
+import { User } from '../entities/user.entity';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AuthService } from '../services/auth.service';
 import { UsersService } from '../services/users.service';
 
@@ -48,5 +56,12 @@ export class AuthController {
     const token = await this.authService.encodeUserToken(user);
 
     return { token, user };
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
+  getMe(@Auth() user: User, @Payload('token') token: string) {
+    return user;
   }
 }

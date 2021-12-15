@@ -56,9 +56,4 @@ export class UsersAdminController {
     return this.usersService.removeRole(+params.userId, params.roleName);
   }
 
-  @Get('me')
-  @UseInterceptors(ClassSerializerInterceptor)
-  getMe(@Auth() user: User, @Payload('token') token: string) {
-    return user;
-  }
 }
