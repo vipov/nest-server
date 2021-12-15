@@ -14,6 +14,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Observable, takeUntil, timer } from 'rxjs';
 import {
   CreateUserDto,
   CreateUserResponse,
@@ -23,6 +24,7 @@ import {
 } from '../dto/user.dto';
 import { User } from '../entities/user.entity';
 import { UserExceptionFilter } from '../filters/user-exception.filter';
+import { PerformanceInterceptor } from '../interceptors/performance.interceptor';
 import { UserByIdPipe } from '../pipes/user-by-id.pipe';
 import { UsersService } from '../services/users.service';
 
@@ -34,7 +36,8 @@ import { UsersService } from '../services/users.service';
   description: 'upss... tego nie przewidzieliśmy',
 })
 @UseInterceptors(ClassSerializerInterceptor)
-@UseFilters(UserExceptionFilter)
+@UseInterceptors(PerformanceInterceptor)
+// @UseFilters(UserExceptionFilter)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
@@ -46,6 +49,28 @@ export class UsersController {
       throw new Error('TEST ERROR');
     }
     return this.usersService.findAll(q);
+  }
+
+  @Get('search')
+  @ApiQuery({ name: 'q', required: false })
+  @ApiResponse({ status: 200, type: User, isArray: true })
+  search(@Query('q') q: string): Observable<User[]> {
+    return new Observable<User[]>((subscriber) => {
+      // CONSTRUCTOR
+      console.log('CONSTRUCTOR');
+      const subscription = setTimeout(() => {
+        console.log('COMPOLETE');
+        subscriber.next([{ id: 55, name: 'data from search engine' }]);
+        subscriber.complete();
+      }, 10000);
+
+      return () => {
+        // DESTRUCTOR
+        // TOTO close database connection / cancel sql query !!!
+        console.log('DESTRUCTOR');
+        clearTimeout(subscription);
+      };
+    });
   }
 
   @Get(':id')
