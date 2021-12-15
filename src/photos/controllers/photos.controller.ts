@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
+  Render,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -14,6 +16,14 @@ import { PhotosService } from '../services/photos.service';
 @ApiTags('Photos')
 export class PhotosController {
   constructor(private photosService: PhotosService) {}
+
+  @Get()
+  @Render('photos/index')
+  async index() {
+    const photos = await this.photosService.getUserPhotos();
+
+    return { photos };
+  }
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
