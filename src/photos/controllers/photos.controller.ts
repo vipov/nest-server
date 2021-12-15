@@ -2,20 +2,30 @@ import {
   Body,
   Controller,
   Get,
+  NotFoundException,
+  Param,
   Post,
   Render,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+import { stat } from 'fs/promises';
+import { join } from 'path';
+import { ConfigService } from '../../config';
 import { FileUploadDto } from '../dto/photos.dto';
 import { PhotosService } from '../services/photos.service';
 
 @Controller('photos')
 @ApiTags('Photos')
 export class PhotosController {
-  constructor(private photosService: PhotosService) {}
+  constructor(
+    private photosService: PhotosService,
+    private config: ConfigService,
+  ) {}
 
   @Get()
   @Render('photos/index')
@@ -35,5 +45,25 @@ export class PhotosController {
     const thumbs = await this.photosService.createThumbs(photo.filename);
 
     return { file, body, photo, thumbs };
+  }
+
+  @Get('download/:filename')
+  async download(@Param('filename') filename: string, @Res() res: Response) {
+    const file = join(this.config.STORAGE_PHOTOS, filename);
+
+    const stats = await stat(file).catch((e) => null);
+
+    if (!stats) {
+      throw new NotFoundException(`File "${filename}" not found`);
+    }
+
+    res.download(file, filename, (err) => {
+      console.log('DOWNLOAD CB', err);
+      if (err) {
+        // handle error
+      } else {
+        // handle success
+      }
+    });
   }
 }
