@@ -21,6 +21,8 @@ async function bootstrap() {
     expressAdapter,
   );
 
+  app.enableShutdownHooks();
+
   const config = app.get(ConfigService);
 
   // SWAGGER SETUP
