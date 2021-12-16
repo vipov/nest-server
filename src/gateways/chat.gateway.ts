@@ -4,8 +4,10 @@ import {
   WebSocketServer,
   OnGatewayConnection,
   OnGatewayDisconnect,
+  OnGatewayInit,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
+import { PhotosService } from '../photos/services/photos.service';
 
 interface Connection {
   username?: string;
@@ -13,11 +15,23 @@ interface Connection {
 }
 
 @WebSocketGateway({ namespace: '/chat' })
-export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class ChatGateway
+  implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
+{
   connections: Connection[] = [];
+
+  constructor(private photosService: PhotosService) {}
 
   @WebSocketServer()
   server: Server;
+
+  afterInit() {
+    this.photosService.notify$.subscribe((e) =>
+      this.server.emit('chatToClient', {
+        message: `Thumbs created: ${e.small}`,
+      }),
+    );
+  }
 
   handleConnection(client: Socket, ...args: any[]) {
     this.connections.push({ client });

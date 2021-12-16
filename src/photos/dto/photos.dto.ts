@@ -6,3 +6,7 @@ export class FileUploadDto {
 
   description?: string;
 }
+
+export class ThumbsCreatedDto {
+  small: string;
+}

@@ -8,9 +8,13 @@ import { Photo } from '../entities/photo.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../users/entities/user.entity';
+import { Subject } from 'rxjs';
+import { ThumbsCreatedDto } from '../dto/photos.dto';
 
 @Injectable()
 export class PhotosService {
+  notify$ = new Subject<ThumbsCreatedDto>();
+
   constructor(
     private config: ConfigService,
 
