@@ -8,9 +8,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '../config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+import { DbModule } from '../db/db.module';
 
 @Module({
   imports: [
+    DbModule,
     ConfigModule,
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({

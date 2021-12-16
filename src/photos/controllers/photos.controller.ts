@@ -22,10 +22,15 @@ import { User } from '../../users/entities/user.entity';
 import { JwtAuthGuard } from '../../users/guards/jwt-auth.guard';
 import { FileUploadDto } from '../dto/photos.dto';
 import { PhotosService } from '../services/photos.service';
+import { ClientProxy, Client, Transport } from '@nestjs/microservices';
+import { CreateThumbsEvent } from '../../worker-client';
 
 @Controller('photos')
 @ApiTags('Photos')
 export class PhotosController {
+  @Client({ transport: Transport.TCP, options: { port: 3001 } })
+  client: ClientProxy;
+
   constructor(
     private photosService: PhotosService,
     private config: ConfigService,
@@ -52,7 +57,11 @@ export class PhotosController {
   ) {
     const photo = await this.photosService.create(file, user);
 
-    const thumbs = await this.photosService.createThumbs(photo.filename);
+    // const thumbs = await this.photosService.createThumbs(photo.filename);
+    const e: CreateThumbsEvent = { filename: photo.filename };
+    const thumbs = await this.client
+      .send(CreateThumbsEvent.message, e)
+      .toPromise();
 
     return { file, body, photo, thumbs };
   }
