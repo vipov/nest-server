@@ -26,15 +26,17 @@
     "migration:run": "npm run typeorm -- migration:run",
     "migration:revert": "npm run typeorm -- migration:revert",
     "migration:create": "npm run typeorm -- migration:create -n"
-
   },
   "dependencies": {
     "@nestjs/common": "^8.2.3",
     "@nestjs/core": "^8.2.3",
     "@nestjs/jwt": "^8.0.0",
+    "@nestjs/microservices": "^8.2.3",
     "@nestjs/platform-express": "^8.2.3",
+    "@nestjs/platform-socket.io": "^8.2.3",
     "@nestjs/swagger": "^5.1.5",
     "@nestjs/typeorm": "^8.0.2",
+    "@nestjs/websockets": "^8.2.3",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
@@ -58,6 +60,7 @@
     "@types/multer": "^1.4.7",
     "@types/node": "^16.11.12",
     "@types/sharp": "^0.29.4",
+    "@types/socket.io": "^3.0.2",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
