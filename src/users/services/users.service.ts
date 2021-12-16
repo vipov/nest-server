@@ -4,11 +4,6 @@ import { UserRoleName, User, UserRole } from '../entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  private roles: UserRole[] = [
-    new UserRole({ id: 1, name: UserRoleName.ROOT }),
-    new UserRole({ id: 2, name: UserRoleName.ADMIN }),
-  ];
-
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = User.create(createUserDto);
 
@@ -45,15 +40,23 @@ export class UsersService {
   }
 
   async addRole(userId: number, roleName: UserRoleName): Promise<User> {
-    const user = await this.findOne(userId);
-    const role = this.roles.find((role) => role.name === roleName);
+    const user = await User.findOne(userId);
+    const [role] = await UserRole.find({ name: roleName });
+
+    if (!role) {
+      throw new NotFoundException(`Role "${roleName}" not found`);
+    }
+
     user.roles.push(role);
+
+    await user.save();
+
     return user;
   }
 
   async removeRole(userId: number, roleName: UserRoleName): Promise<User> {
     const user = await this.findOne(userId);
-    user.roles = user.roles.filter((role) => role.name !== roleName);
+    // user.roles = user.roles.filter((role) => role.name !== roleName);
     return user;
   }
 }

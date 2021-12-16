@@ -1,18 +1,28 @@
 import { Exclude } from 'class-transformer';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 export enum UserRoleName {
   ADMIN = 'admin',
   ROOT = 'root',
 }
 
-export class UserRole {
+@Entity()
+export class UserRole extends BaseEntity {
+  @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
   name: UserRoleName;
 
-  constructor(user: Partial<UserRole>) {
-    Object.assign(this, user);
-  }
+  @ManyToMany((type) => User)
+  users: User[];
 }
 
 @Entity()
@@ -24,13 +34,15 @@ export class User extends BaseEntity {
   name: string;
 
   @Column()
-  email?: string;
+  email: string;
 
   @Column()
   @Exclude({ toPlainOnly: true })
   password?: string;
 
-  roles?: UserRole[] = [];
+  @ManyToMany((type) => UserRole, (role) => role.users, { eager: true })
+  @JoinTable()
+  roles?: UserRole[];
 }
 
 export class TokenPayload {
