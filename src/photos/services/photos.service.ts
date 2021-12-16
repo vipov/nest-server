@@ -4,10 +4,18 @@ import { ConfigService, joinUrl } from '../../config';
 import { readdir, rename } from 'fs/promises';
 import { createHash } from 'crypto';
 import * as sharp from 'sharp';
+import { Photo } from '../entities/photo.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class PhotosService {
-  constructor(private config: ConfigService) {}
+  constructor(
+    private config: ConfigService,
+
+    @InjectRepository(Photo)
+    private photoRepository: Repository<Photo>,
+  ) {}
 
   async create(file: Express.Multer.File) {
     const ext = extname(file.originalname).toLowerCase();
@@ -18,9 +26,11 @@ export class PhotosService {
 
     await rename(file.path, destFile);
 
-    const photo = {
-      filename,
-    };
+    const photo = new Photo();
+    photo.filename = filename;
+    photo.description = file.originalname;
+
+    await this.photoRepository.save(photo);
 
     return photo;
   }
@@ -41,7 +51,10 @@ export class PhotosService {
   }
 
   async getUserPhotos() {
-    const files: string[] = await readdir(this.config.STORAGE_PHOTOS);
+    // const files: string[] = await readdir(this.config.STORAGE_PHOTOS);
+    const photos = await this.photoRepository.find();
+
+    const files: string[] = photos.map((photo) => photo.filename);
 
     return files.map((photo) => ({
       thumbUrl: joinUrl(this.config.PHOTOS_BASE_PATH, photo),

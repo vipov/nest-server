@@ -25,6 +25,8 @@ export class ConfigService implements OnModuleInit, OnModuleDestroy {
     'photos/download',
   );
 
+  readonly DB_NAME = resolve(this.STORAGE_DIR, 'nest.db');
+
   async onModuleInit() {
     // console.log('INIT MODULE CONFIG');
     // TODO validate config values
