@@ -60,7 +60,7 @@ export class UsersController {
       console.log('CONSTRUCTOR');
       const subscription = setTimeout(() => {
         console.log('COMPOLETE');
-        subscriber.next([{ id: 55, name: 'data from search engine' }]);
+        subscriber.next([]);
         subscriber.complete();
       }, 10000);
 
