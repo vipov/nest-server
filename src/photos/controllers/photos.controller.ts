@@ -8,14 +8,18 @@ import {
   Render,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { stat } from 'fs/promises';
 import { join } from 'path';
 import { ConfigService } from '../../config';
+import { Auth } from '../../users/decorators/auth.decorator';
+import { User } from '../../users/entities/user.entity';
+import { JwtAuthGuard } from '../../users/guards/jwt-auth.guard';
 import { FileUploadDto } from '../dto/photos.dto';
 import { PhotosService } from '../services/photos.service';
 
@@ -39,8 +43,14 @@ export class PhotosController {
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: FileUploadDto })
-  async upload(@UploadedFile() file: Express.Multer.File, @Body() body) {
-    const photo = await this.photosService.create(file);
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async upload(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body,
+    @Auth() user: User,
+  ) {
+    const photo = await this.photosService.create(file, user);
 
     const thumbs = await this.photosService.createThumbs(photo.filename);
 

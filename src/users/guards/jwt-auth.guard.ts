@@ -13,13 +13,13 @@ export class JwtAuthGuard implements CanActivate {
     const request: Request = context.switchToHttp().getRequest();
 
     const token = this.extractToken(request);
-
+    console.log('TOKEN', token);
     if (!token) {
       return false;
     }
 
     request.payload = await this.authService.decodeUserToken(token);
-
+    console.log('payload', request.payload);
     if (!request.payload) {
       return false;
     }

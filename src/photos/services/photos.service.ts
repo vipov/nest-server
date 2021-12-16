@@ -7,6 +7,7 @@ import * as sharp from 'sharp';
 import { Photo } from '../entities/photo.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../../users/entities/user.entity';
 
 @Injectable()
 export class PhotosService {
@@ -17,7 +18,7 @@ export class PhotosService {
     private photoRepository: Repository<Photo>,
   ) {}
 
-  async create(file: Express.Multer.File) {
+  async create(file: Express.Multer.File, user: User) {
     const ext = extname(file.originalname).toLowerCase();
 
     const filename = createHash('md5').update(file.path).digest('hex') + ext;
@@ -29,6 +30,8 @@ export class PhotosService {
     const photo = new Photo();
     photo.filename = filename;
     photo.description = file.originalname;
+    // photo.user = user.id as any;
+    photo.user = user;
 
     await this.photoRepository.save(photo);
 
