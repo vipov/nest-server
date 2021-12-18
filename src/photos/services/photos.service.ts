@@ -52,6 +52,8 @@ export class PhotosService {
       .jpeg({ quality: 100 })
       .toFile(destFile);
 
+    this.notify$.next({ small: destFile });
+
     return {
       small: destFile,
     };
