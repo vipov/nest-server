@@ -31,5 +31,6 @@ export class TokenPayload {
 }
 
 export class RequestPayload {
+  companyName?: string;
   user: User;
 }
