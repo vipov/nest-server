@@ -1,4 +1,4 @@
-import { Controller, Get, NotFoundException, Param, Query, BadRequestException, Post, Body, Patch } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param, Query, BadRequestException, Post, Body, Patch, Delete } from '@nestjs/common';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto, CreateUserResponse, FindUsersDto, UpdateUserDto, UpdateUserResponse, UserErrorResponse } from '../dto/user.dto';
 import { User } from '../entities/user.entity';
@@ -44,5 +44,14 @@ export class UsersController {
     const user = await this.usersService.update(+id, data);
 
     return { user };
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    const isDeleted = await this.usersService.remove(+id);
+    if (!isDeleted) {
+      throw new BadRequestException('Removing this user is not possible');
+    }
+    return true;
   }
 }
