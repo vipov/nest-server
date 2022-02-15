@@ -3,11 +3,14 @@ import { AppModule } from './app.module';
 import { ExpressAdapter, NestExpressApplication } from '@nestjs/platform-express';
 import { expressApp } from './express/server';
 import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule, SwaggerCustomOptions } from '@nestjs/swagger';
+import { ConfigService } from './config';
 
 const expressAdapter = new ExpressAdapter(expressApp);
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, expressAdapter);
+
+  const config = app.get(ConfigService);
 
   // SWAGGER SETUP
   const swaggerConfig = new DocumentBuilder()
@@ -29,6 +32,6 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document, customOptions);
   // END OF SWAGGER SETUP
 
-  await app.listen(3000);
+  await app.listen(config.PORT);
 }
 bootstrap();
