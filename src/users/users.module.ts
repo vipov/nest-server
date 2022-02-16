@@ -6,6 +6,8 @@ import { AuthService } from './services/auth.service';
 import { UsersAdminController } from './controllers/users-admin.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '../config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Role, RoleSchema, User, UserSchema } from './entities/user.entity';
 
 @Module({
   imports: [
@@ -18,6 +20,10 @@ import { ConfigModule, ConfigService } from '../config';
         signOptions: { expiresIn: '4d' },
       }),
     }),
+    MongooseModule.forFeature([
+      { name: Role.name, schema: RoleSchema },
+      { name: User.name, schema: UserSchema },
+    ]),
   ],
   controllers: [UsersController, AuthController, UsersAdminController],
   providers: [UsersService, AuthService],

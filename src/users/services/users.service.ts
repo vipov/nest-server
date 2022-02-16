@@ -4,24 +4,8 @@ import { Role, RoleNames, User } from '../entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  private roles: Role[] = [new Role({ id: 1, name: RoleNames.ROOT }), new Role({ id: 2, name: RoleNames.ADMIN })];
-
-  private users: User[] = [
-    new User({
-      id: 1,
-      name: 'Piotr',
-      email: 'piotr@myflow.pl',
-      password: '123',
-      roles: [this.roles[0]],
-    }),
-    new User({
-      id: 2,
-      name: 'Paweł',
-      email: 'pawel@myflow.pl',
-      password: '123',
-      roles: [this.roles[1]],
-    }),
-  ];
+  private roles: Role[] = [];
+  private users: User[] = [];
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = new User({
