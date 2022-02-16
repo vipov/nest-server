@@ -1,12 +1,28 @@
-import { Controller, Get, NotFoundException, Param, Query, BadRequestException, Post, Body, Patch, Delete, UsePipes, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Query,
+  BadRequestException,
+  Post,
+  Body,
+  Patch,
+  Delete,
+  UsePipes,
+  ParseIntPipe,
+  UseFilters,
+} from '@nestjs/common';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto, CreateUserResponse, FindUsersDto, UpdateUserDto, UpdateUserResponse, UserErrorResponse } from '../dto/user.dto';
 import { User } from '../entities/user.entity';
+import { UserExceptionFilter } from '../filters/user-exception.filter';
 import { UserByIdPipe } from '../pipes/user-by-id.pipe';
 import { UsersService } from '../services/users.service';
 
 @Controller('users')
 @ApiTags('Users')
+@UseFilters(UserExceptionFilter)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
