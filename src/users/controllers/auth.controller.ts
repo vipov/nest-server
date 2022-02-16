@@ -37,10 +37,6 @@ export class AuthController {
   async login(@Body() data: AuthLoginDto): Promise<AuthLoginResponse> {
     const user = await this.authService.validateUser(data.email, data.password);
 
-    console.log('INSTANCE OF AuthLoginDto', data instanceof AuthLoginDto);
-    console.log('DATA', data);
-    console.log('NAME', data.getName());
-
     if (!user) {
       throw new UnauthorizedException('Credentails Invalid');
     }
@@ -54,8 +50,6 @@ export class AuthController {
   @UsePipes(new ValidationPipe({ transform: true }))
   async register(@Body() data: AuthRegisterDto): Promise<AuthRegisterResponse> {
     let [user] = await this.usersService.findBy({ email: data.email });
-
-    console.log('DATA', typeof data.birthday, data.birthday.getTime(), data);
 
     if (user) {
       throw new BadRequestException('Email already taken');

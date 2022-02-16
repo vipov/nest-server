@@ -6,12 +6,9 @@ import { UsersService } from '../services/users.service';
 export class UserByIdPipe implements PipeTransform {
   constructor(private usersService: UsersService) {}
 
-  async transform(userId: string, metadata: ArgumentMetadata): Promise<User> {
-    console.log('PIPE METADATA', metadata);
-    const id = parseInt(userId, 10);
-
+  async transform(id: string, metadata: ArgumentMetadata): Promise<User> {
     if (!id) {
-      throw new BadRequestException(`Id param ${userId} has to be valid number`);
+      throw new BadRequestException(`Id param ${id} has to be valid number`);
     }
 
     const user = await this.usersService.findOne(id);

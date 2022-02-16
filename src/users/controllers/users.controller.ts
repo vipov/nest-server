@@ -62,13 +62,13 @@ export class UsersController {
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() data: UpdateUserDto): Promise<UpdateUserResponse> {
-    const user = await this.usersService.update(+id, data);
+    const user = await this.usersService.update(id, data);
 
     return { user };
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number) {
+  async remove(@Param('id') id: string) {
     const isDeleted = await this.usersService.remove(id);
     if (!isDeleted) {
       throw new BadRequestException('Removing this user is not possible');

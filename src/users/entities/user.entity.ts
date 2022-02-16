@@ -34,7 +34,7 @@ export const UserSchema = SchemaFactory.createForClass(User);
 
 export class TokenPayload {
   username: string;
-  sub: number;
+  sub: string;
 }
 
 export class RequestPayload {

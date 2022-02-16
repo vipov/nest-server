@@ -12,7 +12,7 @@ export class UserExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const res: Response = ctx.getResponse();
     const req: Request = ctx.getRequest();
-    const status = exception?.getStatus() || 500;
+    const status = exception.status || 500;
     const userId = req.payload?.user.id || null;
 
     const data = {
