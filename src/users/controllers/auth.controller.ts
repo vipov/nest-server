@@ -1,9 +1,21 @@
-import { Body, Controller, Get, Post, UnauthorizedException, UseGuards, UsePipes, ValidationPipe, BadRequestException } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UnauthorizedException,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+  BadRequestException,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Payload } from '../decorators/payload.decorator';
 import { AuthLoginDto, AuthLoginResponse, AuthRegisterDto, AuthRegisterResponse } from '../dto/auth.dto';
 import { User } from '../entities/user.entity';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { PerformanceInterceptor } from '../interceptors/performance.interceptor';
 import { AuthService } from '../services/auth.service';
 import { UsersService } from '../services/users.service';
 
@@ -15,6 +27,7 @@ export class AuthController {
   @Get('me')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @UseInterceptors(PerformanceInterceptor)
   getMe(@Payload('user') user: User) {
     return { user };
   }
