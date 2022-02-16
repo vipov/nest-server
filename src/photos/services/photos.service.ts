@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { createHash } from 'crypto';
 import { rename } from 'fs/promises';
-import { extname, join } from 'path';
+import { extname, join, resolve } from 'path';
+import * as sharp from 'sharp';
 import { ConfigService } from '../../config';
 
 @Injectable()
@@ -22,5 +23,16 @@ export class PhotosService {
     // add record to db
 
     return { filename };
+  }
+
+  async createThumbs(filename: string) {
+    const srcFile = resolve(this.config.STORAGE_PHOTOS, filename);
+    const destFile = resolve(this.config.STORAGE_THUMBS, filename);
+
+    await sharp(srcFile).rotate().resize(200, 200, { fit: 'cover', position: 'attention' }).jpeg({ quality: 100 }).toFile(destFile);
+
+    return {
+      small: destFile,
+    };
   }
 }

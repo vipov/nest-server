@@ -17,6 +17,9 @@ export class PhotosController {
   @UseInterceptors(FileInterceptor('file'))
   async upload(@UploadedFile() file: Express.Multer.File, @Body() data: PhotoUploadDto) {
     const photo = await this.photosService.create(file);
-    return { file, data, photo };
+
+    const thumbs = await this.photosService.createThumbs(photo.filename);
+
+    return { file, data, photo, thumbs };
   }
 }
