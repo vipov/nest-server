@@ -1,4 +1,5 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { mkdir, stat } from 'fs/promises';
 import { resolve } from 'path';
 
 export const joinUrl = (...paths) => paths.join('/');
@@ -22,9 +23,23 @@ export class ConfigService implements OnModuleInit, OnModuleDestroy {
   readonly PHOTOS_DOWNLOAD_PATH = joinUrl(this.PHOTOS_DOMAIN, 'photos/download');
 
   async onModuleInit() {
-    // TODO implement validation & transformation of the config
+    console.log('INIT MODULE CONFIG');
+    // TODO validate config values
+
+    // check if storage dir root exists
+    const storageRoot = await stat(this.STORAGE_DIR).catch((e) => null);
+    if (!storageRoot) {
+      throw new Error(`STORAGE_DIR location should exist !!! Storage location tested: ${this.STORAGE_DIR}`);
+    }
+
+    // create storage schema
+    await mkdir(this.STORAGE_TMP, { recursive: true });
+    await mkdir(this.STORAGE_PHOTOS, { recursive: true });
+    await mkdir(this.STORAGE_ASSETS, { recursive: true });
+    await mkdir(this.STORAGE_THUMBS, { recursive: true });
   }
+
   async onModuleDestroy() {
-    // TODO clean up
+    console.log('DESTROY MODULE CONFIG');
   }
 }
