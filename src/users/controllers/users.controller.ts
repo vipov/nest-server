@@ -1,7 +1,8 @@
-import { Controller, Get, NotFoundException, Param, Query, BadRequestException, Post, Body, Patch, Delete } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param, Query, BadRequestException, Post, Body, Patch, Delete, UsePipes, ParseIntPipe } from '@nestjs/common';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto, CreateUserResponse, FindUsersDto, UpdateUserDto, UpdateUserResponse, UserErrorResponse } from '../dto/user.dto';
 import { User } from '../entities/user.entity';
+import { UserByIdPipe } from '../pipes/user-by-id.pipe';
 import { UsersService } from '../services/users.service';
 
 @Controller('users')
@@ -20,17 +21,21 @@ export class UsersController {
   @Get(':id')
   @ApiResponse({ status: 404, type: UserErrorResponse, description: 'User not found error' })
   @ApiResponse({ status: 400, type: UserErrorResponse, description: 'Id is invalid' })
-  async findOne(@Param('id') idParam: string): Promise<User> {
-    const id = parseInt(idParam, 10);
-    if (!id) {
-      throw new BadRequestException('Id should be number');
-    }
-    const user = await this.usersService.findOne(id);
-    if (!user) {
-      throw new NotFoundException(`User for id "${id}" not found`);
-    }
+  async findOne(@Param('id', UserByIdPipe) user: User): Promise<User> {
     return user;
   }
+
+  // async findOne(@Param('id') idParam: string): Promise<User> {
+  //   const id = parseInt(idParam, 10);
+  //   if (!id) {
+  //     throw new BadRequestException('Id should be number');
+  //   }
+  //   const user = await this.usersService.findOne(id);
+  //   if (!user) {
+  //     throw new NotFoundException(`User for id "${id}" not found`);
+  //   }
+  //   return user;
+  // }
 
   @Post()
   async create(@Body() data: CreateUserDto): Promise<CreateUserResponse> {
@@ -47,8 +52,8 @@ export class UsersController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    const isDeleted = await this.usersService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    const isDeleted = await this.usersService.remove(id);
     if (!isDeleted) {
       throw new BadRequestException('Removing this user is not possible');
     }

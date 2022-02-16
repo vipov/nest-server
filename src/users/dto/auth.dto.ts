@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { IsDate, IsEmail, IsString, MinLength } from 'class-validator';
 import { User } from '../entities/user.entity';
 
@@ -40,6 +40,7 @@ export class AuthRegisterDto {
 
   @Type(() => Date)
   @IsDate()
+  @Transform((el) => el.value, { toClassOnly: true })
   birthday: Date;
 }
 
