@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsEmail, IsString, MinLength } from 'class-validator';
 import { User } from '../entities/user.entity';
 
 export class AuthLoginDto {
@@ -36,6 +37,10 @@ export class AuthRegisterDto {
   @IsString()
   @MinLength(3)
   password: string;
+
+  @Type(() => Date)
+  @IsDate()
+  birthday: Date;
 }
 
 export class AuthRegisterResponse {

@@ -42,6 +42,8 @@ export class AuthController {
   async register(@Body() data: AuthRegisterDto): Promise<AuthRegisterResponse> {
     let [user] = await this.usersService.findBy({ email: data.email });
 
+    console.log('DATA', typeof data.birthday, data.birthday.getTime(), data);
+
     if (user) {
       throw new BadRequestException('Email already taken');
     }
