@@ -2,14 +2,16 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { ROLES_KEY } from '../decorators/roles.decorator';
-import { RequestPayload, RoleNames, User } from '../entities/user.entity';
+import { RoleNames } from '../entities/user.entity';
+import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private reflector: Reflector, private authService: AuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req: Request = context.switchToHttp().getRequest();
+
     const token = this.extractToken(req);
 
     // pobranie, dekodowanie i validowanie api token
@@ -17,14 +19,8 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    //TODOO validate & decode api token
-    req.payload = {
-      user: new User({
-        id: 55,
-        name: 'fake User',
-        roles: [{ id: 1, name: RoleNames.ROOT }],
-      }),
-    } as RequestPayload;
+    // validate & decode api token
+    req.payload = await this.authService.decodeUserToken(token);
 
     if (!req.payload) {
       throw new UnauthorizedException();
@@ -45,6 +41,10 @@ export class JwtAuthGuard implements CanActivate {
   }
 
   extractToken(req: Request): string {
-    return 'sdf';
+    const token = req.headers.authorization;
+
+    return token ? token.replace('Bearer ', '') : '';
+
+    // return req.headers.authorization?.replace('Bearer ', '') || '';
   }
 }

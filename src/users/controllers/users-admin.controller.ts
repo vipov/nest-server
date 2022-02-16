@@ -1,13 +1,14 @@
 import { Controller, Delete, Param, Post, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { Roles } from '../decorators/roles.decorator';
 import { RoleNames } from '../entities/user.entity';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
 @Controller('users-admin')
-@UseGuards(JwtAuthGuard)
 @ApiTags('UsersAdmin')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class UsersAdminController {
   @Post('user/:userId/role/:roleName')
   @Roles(RoleNames.ADMIN)

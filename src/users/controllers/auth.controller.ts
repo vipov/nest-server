@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { Payload } from '../decorators/payload.decorator';
 import { AuthLoginDto, AuthLoginResponse } from '../dto/auth.dto';
@@ -14,6 +14,7 @@ export class AuthController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   getMe(@Payload('user') user: User) {
     return { user };
   }
