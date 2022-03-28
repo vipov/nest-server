@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Optional } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import { UsersService } from './users/services/users.service';
@@ -9,8 +9,10 @@ export class AppController {
 
   constructor(
     private readonly appService: AppService, 
-    private usersService: UsersService,
-  ) {}
+    @Optional() private usersService: UsersService,
+  ) {
+    console.log(this.usersService)
+  }
 
   @Get()
   getHello(): string {
