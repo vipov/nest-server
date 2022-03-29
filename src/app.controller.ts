@@ -13,7 +13,7 @@ export class AppController {
     private readonly appService: AppService, 
     @Optional() private usersService: UsersService,
   ) {
-    console.log(this.config)
+    // console.log(this.config)
   }
 
   @Get()
