@@ -32,4 +32,6 @@ export class TokenPayload {
 
 export class RequestPayload {
   user: User;
+  // companies?: any[];
+  token?: string;
 }
