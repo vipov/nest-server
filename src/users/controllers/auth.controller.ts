@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UnauthorizedException, UnprocessableEntityException, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { Payload } from '../decorators/payload.decorator';
@@ -28,8 +28,12 @@ export class AuthController {
   }
 
   @Post('login')
+  @UsePipes(new ValidationPipe({
+    transform: false,
+    exceptionFactory: (errors) => new UnprocessableEntityException(errors),
+  }))
   async login(@Body() data: AuthLoginDto): Promise<AuthLoginResponse> {
-
+    console.log(data);
     const user = await this.authService.validateUser(data.email, data.password);
 
     if(!user) {

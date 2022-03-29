@@ -1,5 +1,5 @@
-import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query, UnprocessableEntityException } from '@nestjs/common';
-import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Patch, Post, Query, UnprocessableEntityException } from '@nestjs/common';
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto, CreateUserResponse, FindUsersDto, UpdateUserDto, UpdateUserResponse, UserErrorResponse } from '../dto/user.dto';
 import { UsersService } from '../services/users.service';
 
@@ -16,11 +16,13 @@ export class UsersController {
   }
 
   @Get(':id')
+  @ApiParam({name: 'id', type: Number})
   @ApiResponse({status: 404, type: UserErrorResponse, description: 'user not found error'})
   @ApiResponse({status: 422, type: UserErrorResponse, description: 'invalid id param'})
-  async findOne(@Param('id') idParam: string) {
+  async findOne(@Param('id', ParseIntPipe) id: number) {
 
-    const id = parseInt(idParam, 10);
+    // const id = parseInt(idParam, 10);
+
     if(!id) {
       throw new UnprocessableEntityException('Id param should be number')
     }
