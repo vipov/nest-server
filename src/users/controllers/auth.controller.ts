@@ -3,10 +3,11 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { Payload } from '../decorators/payload.decorator';
 import { Roles } from '../decorators/roles.decorator';
-import { AuthLoginDto, AuthLoginResponse } from '../dto/auth.dto';
+import { AuthLoginDto, AuthLoginResponse, AuthRegisterDto, AuthRegisterResponse } from '../dto/auth.dto';
 import { RoleNames, User } from '../entities/user.entity';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AuthService } from '../services/auth.service';
+import { UsersService } from '../services/users.service';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -15,6 +16,7 @@ export class AuthController {
 
   constructor( 
     private authService: AuthService,
+    private usersService: UsersService,
   ) {}
 
   @Get('me')
@@ -43,5 +45,24 @@ export class AuthController {
     const token = await this.authService.encodeUserToken(user);
 
     return { token, user }
+  }
+
+  @Post('register')
+  async register(@Body() data: AuthRegisterDto): Promise<AuthRegisterResponse> {
+
+    let [user] = await this.usersService.findBy({ email: data.email});
+
+    if(user) {
+      throw new UnprocessableEntityException('Email already taken');
+    }
+
+    const password = await this.authService.encodePassword(data.password);
+
+    user = await this.usersService.create({
+      ...data,
+      password,
+    })
+
+    return { user }
   }
 }

@@ -24,7 +24,7 @@ export class AuthService {
     return isValid ? user : null;
   }
 
-  private async encodePassword(password: string): Promise<string> {
+  async encodePassword(password: string): Promise<string> {
     // TODO use bcrypt
     return password;
   }
