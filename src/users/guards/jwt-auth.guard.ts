@@ -24,14 +24,8 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    // TODO decode & validate api token
-    req.payload = {
-      user: new User({
-        id: 1,
-        name: 'Piotr',
-        roles: [{id: 1, name: RoleNames.ADMIN }]
-      }),
-    }
+    // decode & validate api token
+    req.payload = await this.authService.decodeUserToken(token);
 
     if(!req.payload) {
       throw new UnauthorizedException();

@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { Payload } from '../decorators/payload.decorator';
 import { Roles } from '../decorators/roles.decorator';
@@ -10,7 +10,7 @@ import { AuthService } from '../services/auth.service';
 
 @Controller('auth')
 @ApiTags('Auth')
-@Roles(RoleNames.ADMIN)
+// @Roles(RoleNames.ADMIN)
 export class AuthController {
 
   constructor( 
@@ -19,7 +19,8 @@ export class AuthController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  @Roles(RoleNames.ROOT)
+  @ApiBearerAuth()
+  // @Roles(RoleNames.ROOT)
   me(@Payload('user') user: User) {
     return {
       user
