@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UnauthorizedException, UnprocessableEntityException, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, Post, UnauthorizedException, UnprocessableEntityException, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { Payload } from '../decorators/payload.decorator';
@@ -22,12 +22,12 @@ export class AuthController {
   @Get('me')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @UseInterceptors(ClassSerializerInterceptor)
   // @Roles(RoleNames.ROOT)
   me(@Payload('user') user: User) {
-    throw new Error('Test error')
-    return {
-      user
-    }
+    // throw new Error('Test error')
+    console.log('CONTROLLER')
+    return user
   }
 
   @Post('login')

@@ -6,8 +6,9 @@ import { UsersService } from './services/users.service';
 import { AuthService } from './services/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '../config';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { UserExceptionFilter } from './filters/user-exception.filter';
+import { PerformanceInterceptor } from './interceptors/performance.interceptor';
 
 export class MyMockUserService extends UsersService {
   constructor() {
@@ -46,6 +47,10 @@ export class MyMockUserService extends UsersService {
     {
       provide: APP_FILTER,
       useClass: UserExceptionFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: PerformanceInterceptor,
     },
   ],
   exports: [UsersService],
