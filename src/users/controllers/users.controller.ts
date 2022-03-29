@@ -1,6 +1,8 @@
 import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Patch, Post, Query, UnprocessableEntityException } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto, CreateUserResponse, FindUsersDto, UpdateUserDto, UpdateUserResponse, UserErrorResponse } from '../dto/user.dto';
+import { User } from '../entities/user.entity';
+import { UserByIdPipe } from '../pipes/user-by-id.pipe';
 import { UsersService } from '../services/users.service';
 
 @Controller('users')
@@ -19,6 +21,12 @@ export class UsersController {
   @ApiParam({name: 'id', type: Number})
   @ApiResponse({status: 404, type: UserErrorResponse, description: 'user not found error'})
   @ApiResponse({status: 422, type: UserErrorResponse, description: 'invalid id param'})
+  
+  findOneWithPipe(@Param('id', UserByIdPipe) user: User) {
+    return user;
+  }
+
+  // stara wersja bez pipe
   async findOne(@Param('id', ParseIntPipe) id: number) {
 
     // const id = parseInt(idParam, 10);
