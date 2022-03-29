@@ -1,6 +1,7 @@
 import { Controller, Get, Optional } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AppService } from './app.service';
+import { ConfigService } from './config';
 import { UsersService } from './users/services/users.service';
 
 @Controller()
@@ -8,10 +9,11 @@ import { UsersService } from './users/services/users.service';
 export class AppController {
 
   constructor(
+    private config: ConfigService,
     private readonly appService: AppService, 
     @Optional() private usersService: UsersService,
   ) {
-    console.log(this.usersService)
+    console.log(this.config)
   }
 
   @Get()
