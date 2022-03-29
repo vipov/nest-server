@@ -24,6 +24,7 @@ export class AuthController {
   @ApiBearerAuth()
   // @Roles(RoleNames.ROOT)
   me(@Payload('user') user: User) {
+    throw new Error('Test error')
     return {
       user
     }

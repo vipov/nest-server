@@ -6,6 +6,8 @@ import { UsersService } from './services/users.service';
 import { AuthService } from './services/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '../config';
+import { APP_FILTER } from '@nestjs/core';
+import { UserExceptionFilter } from './filters/user-exception.filter';
 
 export class MyMockUserService extends UsersService {
   constructor() {
@@ -17,10 +19,11 @@ export class MyMockUserService extends UsersService {
 
 @Module({
   imports: [
+    ConfigModule,
     // JwtModule.register({
     //   secret: process.env.JWT_SECRET,
     //   signOptions: { expiresIn: '3d' }
-    // }),
+    // }), 
     JwtModule.registerAsync({
       imports: [ConfigModule, HttpModule],
       inject: [ConfigService, HttpService],
@@ -39,7 +42,11 @@ export class MyMockUserService extends UsersService {
       provide: UsersService,
       useClass: process.env.NODE_ENV === 'dev' ? MyMockUserService : UsersService,
     }, 
-    AuthService
+    AuthService,
+    {
+      provide: APP_FILTER,
+      useClass: UserExceptionFilter,
+    },
   ],
   exports: [UsersService],
 })
