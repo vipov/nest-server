@@ -48,7 +48,7 @@ export class AuthController {
   }
 
   @Post('register')
-  async register(@Body() data: AuthRegisterDto): Promise<AuthRegisterResponse> {
+  async register(@Body(ValidationPipe) data: AuthRegisterDto): Promise<AuthRegisterResponse> {
 
     let [user] = await this.usersService.findBy({ email: data.email});
 

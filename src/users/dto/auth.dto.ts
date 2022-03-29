@@ -29,10 +29,17 @@ export class AuthLoginResponse {
 
 export class AuthRegisterDto {
   @ApiProperty({example: 'Justyna'})
+  @IsString()
+  @MinLength(3)
   name: string;
   @ApiProperty({example: 'justyna@myflow.pl'})
+  @IsEmail()
   email: string;
   @ApiProperty({example: '!@#'})
+  @IsString()
+  @MinLength(3, {
+    message: 'Hasło wymaga min 3 znaków',
+  })
   password: string;
 }
 
