@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -10,10 +10,14 @@ import { JwtAuthGuard } from '../../users/guards/jwt-auth.guard';
 import { PhotoUploadDto } from '../dto/photos.dto';
 import { IsImagePipe } from '../pipes/is-image.pipe';
 import { PhotosService } from '../services/photos.service';
+import { ClientProxy, Transport, Client } from "@nestjs/microservices";
 
 @Controller('photos')
 @ApiTags('Photos')
 export class PhotosController {
+
+  @Client({ transport: Transport.TCP, options: { port: 3001 }})
+  client: ClientProxy;
 
   constructor(
     private photosService: PhotosService,
@@ -33,7 +37,8 @@ export class PhotosController {
 
     const photo = await this.photosService.create(file, data, user);
 
-    const thumbs = await this.photosService.createThumbs(photo.filename);
+    // const thumbs = await this.photosService.createThumbs(photo.filename);
+    const thumbs = await this.client.send('thumbs', photo.filename).toPromise();
 
     return { file, data, photo, thumbs }
   }
@@ -50,5 +55,12 @@ export class PhotosController {
     });
 
     // res.sendFile()
+  }
+
+  @Get('sum')
+  sum(@Query('numbers') numbers: string) {
+    const payload: number[] = (numbers || '').split(',').map(n => parseInt(n, 10));
+
+    return this.client.send<number>('sum', payload)
   }
 }
