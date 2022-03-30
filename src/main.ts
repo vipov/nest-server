@@ -7,11 +7,14 @@ import {
   SwaggerCustomOptions,
 } from '@nestjs/swagger';
 import { ConfigService } from './config';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const config: ConfigService = app.get(ConfigService);
+
+  app.useStaticAssets(config.STORAGE_ASSETS);
 
   // SWAGGER SETUP
   const swaggerConfig = new DocumentBuilder()
