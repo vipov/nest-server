@@ -22,12 +22,14 @@ export class PhotosController {
   @UseInterceptors(FileInterceptor('file'))
   async upload(@UploadedFile(new IsImagePipe({type: 'image'})) file: Express.Multer.File, @Body() data: PhotoUploadDto) {
 
-    const photo = await this.photosService.create(file);
+    const photo = await this.photosService.create(file, data);
 
     const thumbs = await this.photosService.createThumbs(photo.filename);
 
     return { file, data, photo, thumbs }
   }
+
+
  // /photos/download/../../../etc/nginx/passwords.config !!!
   @Get('download/:filename')
   async download(@Param('filename') filename: string, @Res() res: Response) {

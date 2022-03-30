@@ -7,6 +7,7 @@ import * as sharp from 'sharp';
 import { Photo } from '../entities/photo.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PhotoUploadDto } from '../dto/photos.dto';
 
 @Injectable()
 export class PhotosService {
@@ -18,7 +19,7 @@ export class PhotosService {
     private photoRepository: Repository<Photo>
   ) {}
 
-  async create(file: Express.Multer.File) {
+  async create(file: Express.Multer.File, data: PhotoUploadDto) {
 
     // create new file name
     const ext = extname(file.originalname).toLowerCase();
@@ -31,8 +32,9 @@ export class PhotosService {
     // create database record
     const photo = new Photo();
     photo.filename = filename;
+    photo.description = data.description;
     await this.photoRepository.save(photo);
-    
+
     return photo;
   }
 

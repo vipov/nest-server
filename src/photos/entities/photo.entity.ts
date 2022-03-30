@@ -8,4 +8,7 @@ export class Photo {
 
   @Column()
   filename: string;
+
+  @Column({nullable: true})
+  description?: string;
 }
