@@ -34,6 +34,8 @@ export class PhotosService {
     const photo = new Photo();
     photo.filename = filename;
     photo.description = data.description;
+    photo.user = user;
+    
     await this.photoRepository.save(photo);
 
     return photo;
