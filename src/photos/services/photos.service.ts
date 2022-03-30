@@ -4,12 +4,18 @@ import { readdir, rename } from 'fs/promises';
 import { extname, join, resolve } from 'path';
 import { ConfigService, joinUrl } from '../../config';
 import * as sharp from 'sharp';
+import { Photo } from '../entities/photo.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class PhotosService {
 
   constructor(
     private config: ConfigService,
+
+    @InjectRepository(Photo)
+    private photoRepository: Repository<Photo>
   ) {}
 
   async create(file: Express.Multer.File) {
@@ -22,9 +28,12 @@ export class PhotosService {
     const destFile = join(this.config.STORAGE_PHOTOS, filename);
     await rename(file.path, destFile);
 
-    // TODO create database record
-
-    return { filename }
+    // create database record
+    const photo = new Photo();
+    photo.filename = filename;
+    await this.photoRepository.save(photo);
+    
+    return photo;
   }
 
   async createThumbs(filename: string) {

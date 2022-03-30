@@ -18,7 +18,12 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "migration:generate": "npm run typeorm -- migration:generate -n",
+    "migration:run": "npm run typeorm -- migration:run",
+    "migration:revert": "npm run typeorm -- migration:revert",
+    "migration:create": "npm run typeorm -- migration:create -n"
   },
   "dependencies": {
     "@nestjs/common": "^8.4.3",
@@ -26,6 +31,7 @@
     "@nestjs/jwt": "^8.0.0",
     "@nestjs/platform-express": "^8.4.3",
     "@nestjs/swagger": "^5.2.1",
+    "@nestjs/typeorm": "^8.0.2",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
@@ -35,12 +41,15 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.5",
     "sharp": "^0.30.3",
-    "swagger-ui-express": "^4.3.0"
+    "sqlite3": "^5.0.2",
+    "swagger-ui-express": "^4.3.0",
+    "typeorm": "^0.2.41"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.2.4",
     "@nestjs/schematics": "^8.0.8",
     "@nestjs/testing": "^8.4.3",
+    "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.13",
     "@types/jest": "^27.4.1",
     "@types/multer": "^1.4.7",

@@ -23,6 +23,8 @@ export class ConfigService implements OnModuleInit {
   readonly PHOTOS_BASE_PATH = joinUrl(this.PHOTOS_DOMAIN, 'thumbs');
   readonly PHOTOS_DOWNLOAD_PATH = joinUrl(this.PHOTOS_DOMAIN, 'photos/download');
 
+  readonly DB_NAME = resolve(this.STORAGE_DIR, 'nest.db');
+
   async onModuleInit() {
 
     // check if storage exists
