@@ -25,4 +25,8 @@ export class AppController {
 
     return { photos }
   }
+
+  @Get('chat')
+  @Render('chat')
+  chat() {}
 }
