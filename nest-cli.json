@@ -2,6 +2,11 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
+    "assets": [
+      "**/*.hbs",
+      "**/*.js"
+    ],
+    "watchAssets": true,
     "plugins": [
       {
         "name": "@nestjs/swagger/plugin",
