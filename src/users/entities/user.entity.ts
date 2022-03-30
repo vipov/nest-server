@@ -1,33 +1,44 @@
 import { Exclude } from "class-transformer";
+import { BaseEntity, Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 
 export enum RoleNames {
   ADMIN = 'admin',
   ROOT = 'root',
 }
 
-export class Role {
+@Entity()
+export class Role extends BaseEntity {
+  
+  @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
   name: RoleNames;
 
-  constructor(user: Partial<Role>) {
-    Object.assign(this, user);
-  }
+  @ManyToMany((type) => User)
+  users: User[];
 }
 
-export class User {
-  id?: number;
-  name: string;
-  email?: string;
+@Entity()
+export class User extends BaseEntity {
 
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  name: string;
+
+  @Column()
+  email: string;
+  
+  @Column()
   @Exclude({toPlainOnly: true})
   password?: string;
-  
-  roles?: Role[];
 
-  constructor(user: Partial<User>) {
-    this.roles = [];
-    Object.assign(this, user);
-  }
+  @ManyToMany((type) => Role, role => role.users, { eager: true })
+  @JoinTable()
+  roles: Role[];
+
 }
 
 export class TokenPayload {

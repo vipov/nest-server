@@ -13,8 +13,6 @@ import { PerformanceInterceptor } from './interceptors/performance.interceptor';
 export class MyMockUserService extends UsersService {
   constructor() {
     super();
-    this.users = [];
-    this.roles = []
   }
 }
 
