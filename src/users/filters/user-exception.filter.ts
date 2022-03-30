@@ -27,7 +27,11 @@ export class UserExceptionFilter implements ExceptionFilter {
     };
 
     if(status >= 500) {
-      this.logger.error(data);
+      this.logger.error({
+        ...data,
+        errorStack: exception.stack,
+        errorMessage: exception.message,
+       });
     } else {
       this.logger.log(data);
     }

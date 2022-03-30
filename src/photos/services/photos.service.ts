@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { createHash } from 'crypto';
 import { rename } from 'fs/promises';
-import { extname, join } from 'path';
+import { extname, join, resolve } from 'path';
 import { ConfigService } from '../../config';
+import * as sharp from 'sharp';
 
 @Injectable()
 export class PhotosService {
@@ -12,7 +13,6 @@ export class PhotosService {
   ) {}
 
   async create(file: Express.Multer.File) {
-    // TODO validate if this is a image file
 
     // create new file name
     const ext = extname(file.originalname).toLowerCase();
@@ -28,7 +28,17 @@ export class PhotosService {
   }
 
   async createThumbs(filename: string) {
+    const srcFile = resolve(this.config.STORAGE_PHOTOS, filename);
+    const destFile = resolve(this.config.STORAGE_THUMBS, filename);
 
-    return {}
+    await sharp(srcFile)
+      .rotate()
+      .resize(200, 200, { fit: 'cover' })
+      .jpeg({ quality: 100 })
+      .toFile(destFile)
+
+    return { 
+      small: destFile,
+    }
   }
 }

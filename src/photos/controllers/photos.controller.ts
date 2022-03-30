@@ -2,6 +2,7 @@ import { Body, Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/c
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { PhotoUploadDto } from '../dto/photos.dto';
+import { IsImagePipe } from '../pipes/is-image.pipe';
 import { PhotosService } from '../services/photos.service';
 
 @Controller('photos')
@@ -15,7 +16,7 @@ export class PhotosController {
   @Post('upload')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file'))
-  async upload(@UploadedFile() file: Express.Multer.File, @Body() data: PhotoUploadDto) {
+  async upload(@UploadedFile(new IsImagePipe({type: 'image'})) file: Express.Multer.File, @Body() data: PhotoUploadDto) {
 
     const photo = await this.photosService.create(file);
 
