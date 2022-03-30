@@ -8,6 +8,7 @@ import { Photo } from '../entities/photo.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PhotoUploadDto } from '../dto/photos.dto';
+import { User } from '../../users/entities/user.entity';
 
 @Injectable()
 export class PhotosService {
@@ -19,7 +20,7 @@ export class PhotosService {
     private photoRepository: Repository<Photo>
   ) {}
 
-  async create(file: Express.Multer.File, data: PhotoUploadDto) {
+  async create(file: Express.Multer.File, data: PhotoUploadDto, user: User) {
 
     // create new file name
     const ext = extname(file.originalname).toLowerCase();

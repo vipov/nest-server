@@ -39,11 +39,11 @@ export class MyMockUserService extends UsersService {
   ],
   controllers: [UsersController, AuthController],
   providers: [
+    AuthService,
     {
       provide: UsersService,
       useClass: process.env.NODE_ENV === 'dev' ? MyMockUserService : UsersService,
     }, 
-    AuthService,
     {
       provide: APP_FILTER,
       useClass: UserExceptionFilter,
@@ -53,6 +53,6 @@ export class MyMockUserService extends UsersService {
       useClass: PerformanceInterceptor,
     },
   ],
-  exports: [UsersService],
+  exports: [UsersService, AuthService],
 })
 export class UsersModule {}
