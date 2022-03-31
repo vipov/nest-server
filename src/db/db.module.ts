@@ -14,6 +14,7 @@ import { ConfigModule, ConfigService } from '../config';
         entities: [resolve(__dirname, '../**/*.entity{.ts,.js}')],
       })
     })
-  ]
+  ],
+  exports: [TypeOrmModule],
 })
 export class DbModule {}

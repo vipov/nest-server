@@ -1,26 +1,23 @@
 #!/usr/bin/env node
 
-const program = require('commander');
-// const chalk = require('chalk');
-const clear = require('clear');
-const figlet = require('figlet');
+import { Command } from 'commander';
+import * as chalk from 'chalk';
+import * as figlet from 'figlet';
+import * as clear from 'clear';
+
+const program = new Command();
 
 clear();
-console.log('')
-console.log(figlet.textSync('My API CLI', { horizontalLayout: 'full' }));
+const banner = figlet.textSync('Api Tools', { horizontalLayout: 'full' });
+console.log(chalk.yellow(banner), "\n");
 
 program
     .version('0.0.1', '--version')
-    .description('Mange the infrastructure of My API')
+    .description('Narzędzia do zarządzania projektem Nest Server')
     .command('setup', 'setup this project for development')
-    .command('deploy', 'manage deploys')
-    .command('stats', 'display system stats', { isDefault: false });
+    .command('stats', 'display system stats')
+    .exitOverride((err) => process.exit(0) /** TODO handle errors */);
 
 
-// allow commander to parse `process.argv`
-program.parse(process.argv);
-
-// if no command display help info
-if (program.args.length === 0) {
-  program.help();
-}
+// start programm
+program.parse();

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { createHash } from 'crypto';
 import { readdir, rename } from 'fs/promises';
 import { extname, join, resolve } from 'path';
 import { ConfigService, joinUrl } from '../../config';
@@ -23,8 +22,7 @@ export class PhotosService {
   async create(file: Express.Multer.File, data: PhotoUploadDto, user: User) {
 
     // create new file name
-    const ext = extname(file.originalname).toLowerCase();
-    const filename = createHash('md5').update(file.path).digest('hex') + ext;
+    const filename = file.filename + extname(file.originalname).toLowerCase();
 
     // move from tmp to storage
     const destFile = join(this.config.STORAGE_PHOTOS, filename);
@@ -56,12 +54,18 @@ export class PhotosService {
     }
   }
 
-  async getPhotos() {
-    const files: string[] = await readdir(this.config.STORAGE_PHOTOS);
+  async findAll() {
+    return this.photoRepository.find();
+  }
 
-    return files.map((photo) => ({
-      thumbUrl: joinUrl(this.config.PHOTOS_BASE_PATH, photo),
-      downloadUrl: joinUrl(this.config.PHOTOS_DOWNLOAD_PATH, photo),
+  async getPhotos() {
+    // const fileNames: string[] = await readdir(this.config.STORAGE_PHOTOS);
+    
+    const fileNames: string[] = await this.photoRepository.find().then(photos => photos.map(p => p.filename));
+
+    return fileNames.map((fileName) => ({
+      thumbUrl: joinUrl(this.config.PHOTOS_BASE_PATH, fileName),
+      downloadUrl: joinUrl(this.config.PHOTOS_DOWNLOAD_PATH, fileName),
     }))
   }
 }

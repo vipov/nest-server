@@ -1,15 +1,16 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs'
-// import * as chalk from 'chalk';
+import * as chalk from 'chalk';
 import * as inquirer from 'inquirer';
+import * as Table from 'cli-table';
 
 (async function setup() {
   const envFile = "./.env";
   const envTplFile = './.env-tpl';
 
   if(existsSync(envFile)) {
-    return console.log('This project is ready :)')
+    return console.log(chalk.green('This project is ready :)'))
   }
-  console.log('Setting up...')
+  console.log(chalk.green('Setting up...'))
 
   let tpl = readFileSync(envTplFile).toString();
 
@@ -37,8 +38,6 @@ import * as inquirer from 'inquirer';
     },
   ]);
 
-  var Table = require('cli-table');
-
   var table = new Table({
       head: ['Key', 'Value']
   });
@@ -50,11 +49,10 @@ import * as inquirer from 'inquirer';
       tpl = tpl.replace(`<${key}>`, value)
     }
   }
-  
 
   console.log(table.toString());
 
   writeFileSync(envFile, tpl);
 
-  console.log('You are ready to go :)')
+  console.log(chalk.green('You are ready to go :)'))
 })()

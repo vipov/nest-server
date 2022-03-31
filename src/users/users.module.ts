@@ -9,16 +9,15 @@ import { ConfigModule, ConfigService } from '../config';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { UserExceptionFilter } from './filters/user-exception.filter';
 import { PerformanceInterceptor } from './interceptors/performance.interceptor';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Role, User } from './entities/user.entity';
 
-export class MyMockUserService extends UsersService {
-  constructor() {
-    super();
-  }
-}
+export class MyMockUserService extends UsersService {}
 
 @Module({
   imports: [
     ConfigModule,
+    TypeOrmModule.forFeature([User, Role]),
     // JwtModule.register({
     //   secret: process.env.JWT_SECRET,
     //   signOptions: { expiresIn: '3d' }
@@ -51,6 +50,6 @@ export class MyMockUserService extends UsersService {
       useClass: PerformanceInterceptor,
     },
   ],
-  exports: [UsersService, AuthService],
+  exports: [UsersService, AuthService, TypeOrmModule],
 })
 export class UsersModule {}

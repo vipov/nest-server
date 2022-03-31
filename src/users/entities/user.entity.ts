@@ -1,5 +1,5 @@
 import { Exclude } from "class-transformer";
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 
 export enum RoleNames {
   ADMIN = 'admin',
@@ -7,7 +7,7 @@ export enum RoleNames {
 }
 
 @Entity()
-export class Role extends BaseEntity {
+export class Role {
   
   @PrimaryGeneratedColumn()
   id: number;
@@ -20,7 +20,7 @@ export class Role extends BaseEntity {
 }
 
 @Entity()
-export class User extends BaseEntity {
+export class User {
 
   @PrimaryGeneratedColumn()
   id: number;

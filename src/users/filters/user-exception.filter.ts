@@ -22,14 +22,14 @@ export class UserExceptionFilter implements ExceptionFilter {
       statusCode: status,
       userId,
       path: req.url,
-      errorStack: this.config.DEBUG ? exception.stack : null,
+      errorStack: this.config.DEBUG ? exception.stack.split("\n") : null,
       errorMessage: this.config.DEBUG ? exception.message : null,
     };
 
     if(status >= 500) {
       this.logger.error({
         ...data,
-        errorStack: exception.stack,
+        errorStack: exception.stack.split("\n"),
         errorMessage: exception.message,
        });
     } else {

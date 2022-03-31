@@ -16,8 +16,8 @@ import { ClientProxy, Transport, Client } from "@nestjs/microservices";
 @ApiTags('Photos')
 export class PhotosController {
 
-  @Client({ transport: Transport.TCP, options: { port: 3001 }})
-  client: ClientProxy;
+  // @Client({ transport: Transport.TCP, options: { port: 3001 }})
+  // client: ClientProxy;
 
   constructor(
     private photosService: PhotosService,
@@ -37,8 +37,8 @@ export class PhotosController {
 
     const photo = await this.photosService.create(file, data, user);
 
-    // const thumbs = await this.photosService.createThumbs(photo.filename);
-    const thumbs = await this.client.send('thumbs', photo.filename).toPromise();
+    const thumbs = await this.photosService.createThumbs(photo.filename);
+    // const thumbs = await this.client.send('thumbs', photo.filename).toPromise();
 
     return { file, data, photo, thumbs }
   }
@@ -61,6 +61,6 @@ export class PhotosController {
   sum(@Query('numbers') numbers: string) {
     const payload: number[] = (numbers || '').split(',').map(n => parseInt(n, 10));
 
-    return this.client.send<number>('sum', payload)
+    // return this.client.send<number>('sum', payload)
   }
 }
