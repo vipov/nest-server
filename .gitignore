@@ -1,8 +1,8 @@
 # compiled output
 /dist
 /node_modules
-storage
-.env
+/storage
+*.env
 ormconfig.json
 
 # Logs
