@@ -2,8 +2,13 @@
 /dist
 /node_modules
 /storage
+<<<<<<< HEAD
 *.env
 ormconfig.json
+=======
+.env
+/ormconfig.json
+>>>>>>> upstream/220509-nest
 
 # Logs
 logs

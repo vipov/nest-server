@@ -1,6 +1,10 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { AppModule } from './app.module';
+<<<<<<< HEAD
+import { NestExpressApplication } from '@nestjs/platform-express';
+=======
+>>>>>>> upstream/220509-nest
 import {
   SwaggerModule,
   DocumentBuilder,
@@ -10,12 +14,22 @@ import {
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+<<<<<<< HEAD
   // SWAGGER SETUP
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Mój Projekt w Nest')
     .setDescription('Przykładowy projekt w Node.js i TypeScript')
     .setVersion('1.0')
     .build();
+=======
+
+  // SWAGGER SETUP
+  const swaggerConfig = new DocumentBuilder()
+  .setTitle('Mój Projekt w Nest')
+  .setDescription('Przykładowy projekt w Node.js i TypeScript')
+  .setVersion('1.0')
+  .build();
+>>>>>>> upstream/220509-nest
 
   const options: SwaggerDocumentOptions = {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
@@ -30,6 +44,10 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document, customOptions);
   // END OF SWAGGER SETUP
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/220509-nest
   await app.listen(3000);
 }
 bootstrap();
