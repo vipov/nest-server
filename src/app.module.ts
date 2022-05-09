@@ -7,10 +7,6 @@ import { ContactController } from './contacts/contact.controller';
   imports: [],
   controllers: [AppController, ContactController],
   providers: [AppService],
-<<<<<<< HEAD
-  exports: []
-=======
   exports: [],
->>>>>>> upstream/220509-nest
 })
 export class AppModule {}

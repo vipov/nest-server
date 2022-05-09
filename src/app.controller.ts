@@ -12,15 +12,9 @@ export class AppController {
 
   @Get()
   getHello(): string {
-<<<<<<< HEAD
-    const data: string = this.appService.getHello();
-    return data;
-    // return this.appService.getHello();
-=======
 
     const data: string = this.appService.getHello();
 
     return data;
->>>>>>> upstream/220509-nest
   }
 }
