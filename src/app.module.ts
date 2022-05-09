@@ -6,9 +6,10 @@ import { ConfigModule } from './config';
 import { PhotosModule } from './photos/photos.module';
 import { DbModule } from './db/db.module';
 import { ChatGateway } from './gateways/chat.gateway';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
-  imports: [UsersModule, ConfigModule, PhotosModule, DbModule],
+  imports: [UsersModule, ConfigModule, PhotosModule, DbModule, StorageModule],
   controllers: [AppController],
   providers: [AppService, ChatGateway],
 })
