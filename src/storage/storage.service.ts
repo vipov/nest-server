@@ -1,11 +1,17 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { mkdir, readFile, stat, writeFile } from 'fs/promises';
+import { STORAGE_FILE } from './storage.tokens';
 
 @Injectable()
 export class StorageService implements OnModuleInit {
 
-  private STORAGE_FILE = './storage/data.json';
   data: { [key: string]: any[]; } = {};
+
+  constructor(
+
+    @Inject(STORAGE_FILE)
+    private STORAGE_FILE: string,
+  ) {}
 
   private async save() {
     await writeFile(this.STORAGE_FILE, JSON.stringify(this.data, null, 2));
@@ -83,7 +89,7 @@ export class StorageService implements OnModuleInit {
     Object.assign(inst, entity);
     return inst;
   }
-  
+
   async remove<T>(cls: new () => T, id: number): Promise<number | null> {
     const name = cls.name;
     const row = await this.findOne(cls, id);
