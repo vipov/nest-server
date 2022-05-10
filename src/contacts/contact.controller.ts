@@ -1,11 +1,21 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { AppService } from '../app.service';
+import { LoggerService } from '../logger/logger.service';
+import { StorageService } from '../storage/storage.service';
 import { CreateContactDto, GetContactsDto, UpdateContactDto, UpdateContactResponse } from './contact.dto';
 import { Contact } from './contact.entity';
 
 @Controller('contacts')
 @ApiTags('Contacts')
-export class ContactController {
+export class ContactsController {
+
+  constructor(
+    private storage: StorageService,
+    private logger: LoggerService,
+  ) {
+    this.logger.warn('WITAJ W Contacts Controller')
+  }
 
   @Get()
   async findAll(@Query( new ValidationPipe({transform: true})) query: GetContactsDto): Promise<Contact[]> {

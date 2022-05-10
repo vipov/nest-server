@@ -34,15 +34,6 @@ export class GetContactsDto {
   createdAt?: Date
 }
 
-const prop = {
-  value: '2022-05-09',
-  key: 'createdAt'
-}
-console.log(prop.value);
-
-const { value } = prop;
-console.log(value);
-
 export class CreateContactDto {
   @ApiProperty({
     description: 'Podaj swoje imie',
