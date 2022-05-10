@@ -65,13 +65,13 @@ export class ContactController {
   @ApiResponse({ status: 500, type: ErrorResponse, description: 'Cos poszlo nie tak'})
   async create(@Body() data: CreateContactDto): Promise<Contact> {
 
-    const existingEmail = await this.storage.findAll(Contact).then(contacts => contacts.find(contact.email ===data.email))
+    const existingEmail = await this.storage.findAll(Contact).then(contacts => contacts.find(contact.email === data.email))
     if(existingEmail) {
       throw new BadRequestException(`Email ${data.email} jest juz zajety`)
     }
     const contact = await this.storage.create(Contact, data);
     if(!contact) {
-      this.logger.warn(`Kontakt dla id ${id} nie istnieje`, '404 Not Found')
+      this.logger.warn(`Kontakt dla id  nie istnieje`, '404 Not Found')
       throw new InternalServerErrorException('Ups, cos nie tak');
     }
     return contact;
