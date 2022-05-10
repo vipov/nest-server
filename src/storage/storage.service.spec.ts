@@ -1,7 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { mkdir, readFile, stat, writeFile } from 'fs/promises';
 
-// w katalogu storage.json przechowuje dane
 @Injectable()
 export class StorageService implements OnModuleInit {
 
@@ -86,6 +85,10 @@ export class StorageService implements OnModuleInit {
   }
   async remove<T>(cls: new () => T, id: number): Promise<number> {
     const name = cls.name;
+    const row = await this.findOne(cls, id);
+    if(!row) {
+      return null;
+    }
     if(this.data[name]) {
       this.data[name] = this.data[name].filter(e => e.id !== id);
     }
