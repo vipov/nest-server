@@ -1,35 +1,60 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Contact } from './contact.entity';
-
+import { IsEnum, IsNumber, IsOptional, IsString, Max, Min, IsEmail, MinLength} from 'class-validator';
+import { Transform } from 'class-transformer';
 export enum SortDir {
   ASC = 'asc',
   DESC = 'desc',
 }
 
 export class GetContactsDto {
-  page?: number;
-  pageSize?: number;
-  sortBy?: string;
-  sortDir?: SortDir;
+  @IsNumber()
+  @IsOptional()
+  @Min(1)
+  @Transform((prop) => parseInt(prop.value, 10))
+  page?: number = 1;
+
+  @IsNumber()
+  @IsOptional()
+  @Max(10)
+  @Transform((prop) => parseInt(prop.value, 10))
+  pageSize?: number = 2;
+
+  @IsString()
+  @IsOptional()
+  sortBy?: string  = 'email';
+
+  @IsEnum(SortDir)
+  @IsOptional()
+  sortDir?: SortDir = SortDir.ASC;
+
+  @Transform(( {value}) => new Date(value))
+  createAt?: Date
 }
 
 export class CreateContactDto {
+
   @ApiProperty({
     description: 'Podaj imie',
     example: 'Przemek',
   })
-  name: string;
+  @IsString()
+  @MinLength(5)
+  name: string = 'Przemek';
+
   @ApiProperty({
     description: 'Podaj email',
     example: 'Przemek@przemek.pl',
   })
-  email: string;
+  @IsEmail()
+  email: string = 'Przemek@przemek.pl';
+
   @ApiProperty({
     description: 'W czym pomoc?',
     example: 'nice app',
   })
-  message: string;
-  
+  @MinLength(5)
+  message: string = 'Default message';
 }
 
 export class UpdateContactDto {
