@@ -1,5 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateContactDto, GetContactsDto, UpdateContactDto, UpdateContactResponse } from './contact.dto';
 import { Contact } from './contact.entity';
 
 @Controller('contacts')
@@ -7,31 +8,58 @@ import { Contact } from './contact.entity';
 export class ContactController {
 
   @Get()
-  async findAll(): Promise<Contact[]> {
+  async findAll(@Query( new ValidationPipe({transform: true})) query: GetContactsDto): Promise<Contact[]> {
 
     // todo pobrac rekordy i je zwrocic
     return [
       {id: 1, name: 'piotr', email: 'pio@myflow.pl', message: 'test'},
       {id: 2, name: 'piotr', email: 'pio@myflow.pl', message: 'test'},
+      query as any,
     ]
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Contact> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Contact> {
 
     //TODO uzyc bazy danych do odczytu rekordu dla id
-    
+
     return {
-      id: parseInt(id, 10),
+      id,
       email: '',
       name: '',
       message: '',
     }
   }
 
-  create() {}
+  @Post()
+  @UsePipes(new ValidationPipe({transform: true}))
+  async create(@Body() data: CreateContactDto): Promise<Contact>{
 
-  update() {}
+    return {
+      email: '',
+      message: 'test new one',
+      name: '',
+      ...data,
+      id: 1,
+    }
+  }
 
-  remove() {}
+  @Patch(':id')
+  async update(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateContactDto): Promise<UpdateContactResponse> {
+
+    return {
+      contact: {
+        ...data,
+        id: id,
+        email: ''
+      }
+    }
+  }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<number> {
+
+    return id;
+  }
+
 }
