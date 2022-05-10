@@ -33,7 +33,8 @@ export class ContactController {
     private storage: StorageService,
     private logger: LoggerService,
     ) { 
-      this.logger.warn(' WITAJ W contacts controllser');
+      console.log(logger);
+      // this.logger.warn(' WITAJ W contacts controllser');
 
     }
 
@@ -51,6 +52,7 @@ export class ContactController {
     // TODO uzyc bazy danych do odczytu rekordu dla id
     const contact = await this.storage.findOne(Contact, id);
     if(!contact) {
+      this.logger.warn(`Kontakt dla id ${id} nie istnieje`, '404 Not Found')
       throw new NotFoundException(`Kontakt dla id ${id} nie istnieje`)
     }
     return contact;
@@ -69,6 +71,7 @@ export class ContactController {
     }
     const contact = await this.storage.create(Contact, data);
     if(!contact) {
+      this.logger.warn(`Kontakt dla id ${id} nie istnieje`, '404 Not Found')
       throw new InternalServerErrorException('Ups, cos nie tak');
     }
     return contact;
@@ -84,6 +87,7 @@ export class ContactController {
 
     const contact = await this.storage.update(Contact, id, data);
     if (!contact) {
+      this.logger.warn(`Kontakt dla id ${id} nie istnieje`, '404 Not Found')
       throw new NotFoundException(`Kontakt dla id ${id} nie istnieje`)
     }
     return {contact};
@@ -92,7 +96,6 @@ export class ContactController {
   @Delete(':id')
   @ApiResponse({ status: 404, type: ErrorResponse, description: 'Blad gdy rekord nie istenieje'})
   async remove(@Param('id', ParseIntPipe) id: number): Promise<number> {
-    // const contact = contact.find(contact.id ===data.email)
     const contact = await this.storage.findOne(Contact, id);
 
     if (!contact) {
@@ -100,6 +103,5 @@ export class ContactController {
     }
     const c = await this.storage.remove(Contact, id);
     return c;
-    // return id;
   }
 }
