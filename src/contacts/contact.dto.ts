@@ -13,7 +13,6 @@ export class GetContactsDto {
   @Min(1)
   @Transform((prop) => parseInt(prop.value, 10))
   page?: number = 1;
-
   @IsNumber()
   @IsOptional()
   @Max(10)

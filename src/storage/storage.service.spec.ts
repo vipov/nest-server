@@ -1,10 +1,17 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { mkdir, readFile, stat, writeFile } from 'fs/promises';
+import { STORAGE_FILE } from './storage.tokens';
 
 @Injectable()
 export class StorageService implements OnModuleInit {
 
-  private STORAGE_FILE = './storage/data.json';
+  // private STORAGE_FILE = './storage/data.json';
+
+  constructor(
+    @Inject(STORAGE_FILE)
+    private STORAGE_FILE: string) 
+    {}
+
   data: { [key: string]: any[]; } = {};
 
   private async save() {
