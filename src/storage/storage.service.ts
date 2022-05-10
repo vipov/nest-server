@@ -83,8 +83,13 @@ export class StorageService implements OnModuleInit {
     Object.assign(inst, entity);
     return inst;
   }
-  async remove<T>(cls: new () => T, id: number): Promise<number> {
+  
+  async remove<T>(cls: new () => T, id: number): Promise<number | null> {
     const name = cls.name;
+    const row = await this.findOne(cls, id);
+    if(!row) {
+      return null;
+    }
     if(this.data[name]) {
       this.data[name] = this.data[name].filter(e => e.id !== id);
     }

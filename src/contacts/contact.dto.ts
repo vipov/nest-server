@@ -66,3 +66,9 @@ export class UpdateContactDto {
 export class UpdateContactResponse {
   contact: Contact;
 }
+
+export class ErrorResponse {
+  statusCode: number;
+  message: string;
+  error: string;
+}
