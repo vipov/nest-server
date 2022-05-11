@@ -6,24 +6,23 @@ import { StorageService } from './storage.service';
 import { STORAGE_FILE } from './storage.tokens';
 
 @Module({
-  imports:[ConfigModule],
+  imports: [ConfigModule],
   controllers: [],
   providers: [
     {
-     provide: StorageService,
-     inject: [ConfigService],
-     useFactory: (config: ConfigService) => {
-       const file = resolve(config.STORAGE_DIR, 'data.json')
-       return new StorageService(file);
-     }
+      provide: StorageService,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const file = resolve(config.STORAGE_DIR, 'data.json');
+        return new StorageService(file);
+      },
     },
-  
-  
-  {
-    provide: STORAGE_FILE,
-    useValue: './storage/data.json',
-  }
+
+    {
+      provide: STORAGE_FILE,
+      useValue: './storage/data.json',
+    },
   ],
-  exports: [StorageService]
+  exports: [StorageService],
 })
 export class StorageModule {}

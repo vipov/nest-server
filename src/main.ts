@@ -13,10 +13,10 @@ async function bootstrap() {
 
   // SWAGGER SETUP
   const swaggerConfig = new DocumentBuilder()
-  .setTitle('Mój Projekt w Nest')
-  .setDescription('Przykładowy projekt w Node.js i TypeScript')
-  .setVersion('1.0')
-  .build();
+    .setTitle('Mój Projekt w Nest')
+    .setDescription('Przykładowy projekt w Node.js i TypeScript')
+    .setVersion('1.0')
+    .build();
 
   const options: SwaggerDocumentOptions = {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,

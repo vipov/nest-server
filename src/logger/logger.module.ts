@@ -10,9 +10,12 @@ import { StorageLoggerService } from './store-logger.service';
   providers: [
     {
       provide: LoggerService,
-      useClass: process.env.NODE_ENV === 'development' ? LoggerService : StorageLoggerService 
-    }
+      useClass:
+        process.env.NODE_ENV === 'development'
+          ? LoggerService
+          : StorageLoggerService,
+    },
   ],
-  exports: [LoggerService]
+  exports: [LoggerService],
 })
 export class LoggerModule {}

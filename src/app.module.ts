@@ -5,8 +5,7 @@ import { AppService } from './app.service';
 // import { StorageService } from './storage/storage.service';
 // import { StorageModule } from './storage/storage.module';
 // import { LoggerModule } from './logger/logger.module';
-import { ContactsModule} from './contacts/contacts.module';
-
+import { ContactsModule } from './contacts/contacts.module';
 
 @Module({
   imports: [ContactsModule],

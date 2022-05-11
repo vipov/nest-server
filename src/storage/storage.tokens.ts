@@ -1,1 +1,1 @@
-export const STORAGE_FILE = 'STORAGE_FILE'
+export const STORAGE_FILE = 'STORAGE_FILE';
