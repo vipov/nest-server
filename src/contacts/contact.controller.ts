@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -11,10 +12,11 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Contact } from './contact.entity';
 import {
   GetContactsDto,
@@ -22,13 +24,22 @@ import {
   UpdateContactDto,
   UpdateContactResponse,
   ErrorResponse,
+  SimplePayloadDto,
+  SimpleRoleNames,
 } from './contact.dto';
 import { StorageService } from 'src/storage/storage.service';
 import { LoggerService } from 'src/logger/logger.service';
+import { SimpleGuard } from './simple.guard';
+import { SimplePayload } from './simple-payload.decorator';
+import { SimpleRole } from './simple-role.decorator';
+import { PerformenceInterceptor } from './performence.interceptor';
 
 @Controller('contacts')
 @ApiTags('Contacts')
-export class ContactController {
+@SimpleRole(SimpleRoleNames.ADMIN)
+@UserInterceptors(PerformenceInterceptor)
+
+export class ContactsController {
   constructor(private storage: StorageService, private logger: LoggerService) {
     console.log(logger);
     // this.logger.warn(' WITAJ W contacts controllser');
@@ -47,9 +58,13 @@ export class ContactController {
   }
 
   @Get(':id')
+  @UserInterceptors(ClassSerializerInterceptor)
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Contact> {
     // TODO uzyc bazy danych do odczytu rekordu dla id
     const contact = await this.storage.findOne(Contact, id);
+    // console.log(payload)
+    // this.logger.warn(`Kontakt dla id ${id} nie istnieje`, '404 Not Found')
+
     if (!contact) {
       this.logger.warn(`Kontakt dla id ${id} nie istnieje`, '404 Not Found');
       throw new NotFoundException(`Kontakt dla id ${id} nie istnieje`);
@@ -73,8 +88,10 @@ export class ContactController {
   async create(@Body() data: CreateContactDto): Promise<Contact> {
     const existingEmail = await this.storage
       .findAll(Contact)
-      .then((contacts) => contacts.find(contact.email === data.email));
-      .then((contacts) => contacts.find(contact.email === data.email));
+      // .then((contacts) => contacts.find(contact.email === data.email));
+      .then((contacts) =>
+        contacts.find((contact) => contact.email === data.email),
+      );
     if (existingEmail) {
       throw new BadRequestException(`Email ${data.email} jest ddjuz zajety`);
     }
@@ -92,6 +109,9 @@ export class ContactController {
     type: ErrorResponse,
     description: 'Id z tym rekordem nie istnieje',
   })
+  @UseGuards(SimpleGuard)
+  @ApiBearerAuth()
+  @SimpleRole(SimpleRoleNames.ADMIN)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() data: UpdateContactDto,
@@ -105,14 +125,20 @@ export class ContactController {
   }
 
   @Delete(':id')
+  @UseGuards(SimpleGuard)
   @ApiResponse({
     status: 404,
     type: ErrorResponse,
     description: 'Blad gdy rekord nie istenieje',
   })
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<number> {
+  @ApiBearerAuth()
+  @SimpleRole(SimpleRoleNames.ROOT)
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+    @SimplePayload() payload: SimplePayloadDto,
+  ): Promise<number> {
     const contact = await this.storage.findOne(Contact, id);
-
+    this.logger.warn(`User $payload.name} usuwa contact o id ${id}`);
     if (!contact) {
       throw new NotFoundException(`Kontakt dla id ${id} nie istnieje`);
     }
@@ -120,3 +146,7 @@ export class ContactController {
     return c;
   }
 }
+function UserInterceptors(PerformenceInterceptor: typeof PerformenceInterceptor) {
+  throw new Error('Function not implemented.');
+}
+
