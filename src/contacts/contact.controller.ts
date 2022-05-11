@@ -1,9 +1,10 @@
-import { BadRequestException, Body, Controller, Delete, Get, InternalServerErrorException, NotFoundException, Param, ParseIntPipe, Patch, Post, Query, UnprocessableEntityException, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Delete, Get, InternalServerErrorException, NotFoundException, Param, ParseIntPipe, Patch, Post, Query, UnprocessableEntityException, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoggerService } from '../logger/logger.service';
 import { StorageService } from '../storage/storage.service';
 import { CreateContactDto, ErrorResponse, GetContactsDto, SimplePayloadDto, SimpleRoleNames, UpdateContactDto, UpdateContactResponse } from './contact.dto';
 import { Contact } from './contact.entity';
+import { PerformenceInterceptor } from './performence.interceptor';
 import { SimplePayload } from './simple-payload.decorator';
 import { SimpleRole } from './simple-role.decorator';
 import { SimpleGuard } from './simple.guard';
@@ -11,6 +12,7 @@ import { SimpleGuard } from './simple.guard';
 @Controller('contacts')
 @ApiTags('Contacts')
 @SimpleRole(SimpleRoleNames.ADMIN)
+@UseInterceptors(PerformenceInterceptor)
 export class ContactsController {
 
   constructor(
@@ -30,6 +32,7 @@ export class ContactsController {
   }
 
   @Get(':id')
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiResponse({status: 404, type: ErrorResponse, description: 'Błąd gdy rekord dla danego id nie istnieje'})
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Contact> {
 
