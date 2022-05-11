@@ -5,14 +5,10 @@ import { AppService } from './app.service';
 @Controller()
 @ApiTags('App')
 export class AppController {
-<<<<<<< HEAD
-  constructor(private readonly appService: AppService) {}
-=======
 
   constructor(
     private appService: AppService
   ) {}
->>>>>>> upstream/220509-nest
 
   @Get()
   getHello(): string {

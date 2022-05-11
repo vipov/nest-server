@@ -74,14 +74,7 @@ export class UpdateContactResponse {
 }
 
 export class ErrorResponse {
-<<<<<<< HEAD
-  'statusCode': number;
-  'message': string;
-  'error': string;
-}
-=======
   statusCode: number;
   message: string;
   error: string;
 }
->>>>>>> upstream/220509-nest
