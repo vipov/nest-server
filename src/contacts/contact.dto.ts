@@ -87,5 +87,5 @@ export enum SimpleRoleNames {
 export class SimplePayloadDto {
   id: number;
   name: string;
-  role: SimpleRoleNames[];
-}
+  roles: SimpleRoleNames[];
+} 

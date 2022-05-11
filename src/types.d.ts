@@ -1,7 +1,8 @@
 import 'express';
-import { SimplePayload } from './contacts/contact.dto';
+import { SimplePayloadDto } from './contacts/contact.dto';
+
 declare module 'express' {
   export interface Request {
-    simplePayload?: SimplePayload | undefined | null;
+    simplePayload?: SimplePayloadDto | undefined | null;
   }
 }

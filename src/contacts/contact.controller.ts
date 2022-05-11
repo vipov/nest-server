@@ -12,37 +12,38 @@ import {
   Patch,
   Post,
   Query,
+  UnprocessableEntityException,
   UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Contact } from './contact.entity';
+import { LoggerService } from '../logger/logger.service';
+import { StorageService } from '../storage/storage.service';
 import {
-  GetContactsDto,
   CreateContactDto,
-  UpdateContactDto,
-  UpdateContactResponse,
   ErrorResponse,
+  GetContactsDto,
   SimplePayloadDto,
   SimpleRoleNames,
+  UpdateContactDto,
+  UpdateContactResponse,
 } from './contact.dto';
-import { StorageService } from 'src/storage/storage.service';
-import { LoggerService } from 'src/logger/logger.service';
-import { SimpleGuard } from './simple.guard';
+import { Contact } from './contact.entity';
+import { PerformenceInterceptor } from './performence.interceptor';
 import { SimplePayload } from './simple-payload.decorator';
 import { SimpleRole } from './simple-role.decorator';
-import { PerformenceInterceptor } from './performence.interceptor';
+import { SimpleGuard } from './simple.guard';
 
 @Controller('contacts')
 @ApiTags('Contacts')
 @SimpleRole(SimpleRoleNames.ADMIN)
-@UserInterceptors(PerformenceInterceptor)
-
+@UseInterceptors(PerformenceInterceptor)
 export class ContactsController {
   constructor(private storage: StorageService, private logger: LoggerService) {
-    console.log(logger);
-    // this.logger.warn(' WITAJ W contacts controllser');
+    // console.log(logger);
+    // this.logger.warn('WITAJ W Contacts Controller')
   }
 
   @Get()
@@ -58,7 +59,12 @@ export class ContactsController {
   }
 
   @Get(':id')
-  @UserInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiResponse({
+    status: 404,
+    type: ErrorResponse,
+    description: 'Błąd gdy rekord dla danego id nie istnieje',
+  })
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Contact> {
     // TODO uzyc bazy danych do odczytu rekordu dla id
     const contact = await this.storage.findOne(Contact, id);
@@ -107,11 +113,10 @@ export class ContactsController {
   @ApiResponse({
     status: 404,
     type: ErrorResponse,
-    description: 'Id z tym rekordem nie istnieje',
+    description: 'Błąd gdy rekord dla danego id nie istnieje',
   })
   @UseGuards(SimpleGuard)
   @ApiBearerAuth()
-  @SimpleRole(SimpleRoleNames.ADMIN)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() data: UpdateContactDto,
@@ -125,12 +130,12 @@ export class ContactsController {
   }
 
   @Delete(':id')
-  @UseGuards(SimpleGuard)
   @ApiResponse({
     status: 404,
     type: ErrorResponse,
-    description: 'Blad gdy rekord nie istenieje',
+    description: 'Błąd gdy rekord dla danego id nie istnieje',
   })
+  @UseGuards(SimpleGuard)
   @ApiBearerAuth()
   @SimpleRole(SimpleRoleNames.ROOT)
   async remove(
@@ -138,15 +143,19 @@ export class ContactsController {
     @SimplePayload() payload: SimplePayloadDto,
   ): Promise<number> {
     const contact = await this.storage.findOne(Contact, id);
-    this.logger.warn(`User $payload.name} usuwa contact o id ${id}`);
+    console.log(payload);
+    this.logger.log(`User ${payload.name} usuwa contact o id: ${id}`);
+
     if (!contact) {
+      this.logger.warn(`Kontakt dla id ${id}`, '404 Not Found');
       throw new NotFoundException(`Kontakt dla id ${id} nie istnieje`);
     }
     const c = await this.storage.remove(Contact, id);
     return c;
   }
 }
-function UserInterceptors(PerformenceInterceptor: typeof PerformenceInterceptor) {
+function UserInterceptors(
+  PerformenceInterceptor: typeof PerformenceInterceptor,
+) {
   throw new Error('Function not implemented.');
 }
-
