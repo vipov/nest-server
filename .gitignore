@@ -2,7 +2,7 @@
 /dist
 /node_modules
 /storage
-*.env
+.env
 /ormconfig.json
 
 # Logs
