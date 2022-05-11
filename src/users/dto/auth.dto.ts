@@ -19,3 +19,18 @@ export class AuthRegisterDto {
 export class AuthRegisterResponse {
   user: User
 }
+
+export class AuthLoginDto {
+  @IsEmail()
+  @ApiProperty({example: 'piotr@myflow.pl'})
+  email: string;
+
+  @MinLength(3)
+  @ApiProperty({example: '!@#'})
+  password: string;
+}
+
+export class AuthLoginResponse {
+  token: string;
+  user: User;
+}
