@@ -72,3 +72,14 @@ export class ErrorResponse {
   message: string;
   error: string;
 }
+
+export enum SimpleRoleNames {
+  ROOT = 'root',
+  ADMIN = 'admin',
+}
+
+export class SimplePayloadDto {
+  id: number;
+  name: string;
+  roles: SimpleRoleNames[];
+} 

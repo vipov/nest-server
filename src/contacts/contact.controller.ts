@@ -1,19 +1,23 @@
-import { BadRequestException, Body, Controller, Delete, Get, InternalServerErrorException, NotFoundException, Param, ParseIntPipe, Patch, Post, Query, UnprocessableEntityException, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { BadRequestException, Body, Controller, Delete, Get, InternalServerErrorException, NotFoundException, Param, ParseIntPipe, Patch, Post, Query, UnprocessableEntityException, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoggerService } from '../logger/logger.service';
 import { StorageService } from '../storage/storage.service';
-import { CreateContactDto, ErrorResponse, GetContactsDto, UpdateContactDto, UpdateContactResponse } from './contact.dto';
+import { CreateContactDto, ErrorResponse, GetContactsDto, SimplePayloadDto, SimpleRoleNames, UpdateContactDto, UpdateContactResponse } from './contact.dto';
 import { Contact } from './contact.entity';
+import { SimplePayload } from './simple-payload.decorator';
+import { SimpleRole } from './simple-role.decorator';
+import { SimpleGuard } from './simple.guard';
 
 @Controller('contacts')
 @ApiTags('Contacts')
+@SimpleRole(SimpleRoleNames.ADMIN)
 export class ContactsController {
 
   constructor(
     private storage: StorageService,
     private logger: LoggerService,
   ) {
-    console.log(logger);
+    // console.log(logger);
     // this.logger.warn('WITAJ W Contacts Controller')
   }
 
@@ -64,6 +68,8 @@ export class ContactsController {
 
   @Patch(':id')
   @ApiResponse({status: 404, type: ErrorResponse, description: 'Błąd gdy rekord dla danego id nie istnieje'})
+  @UseGuards(SimpleGuard)
+  @ApiBearerAuth()
   async update(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateContactDto): Promise<UpdateContactResponse> {
 
     const contact = await this.storage.update(Contact, id, data);
@@ -78,10 +84,15 @@ export class ContactsController {
 
   @Delete(':id')
   @ApiResponse({status: 404, type: ErrorResponse, description: 'Błąd gdy rekord dla danego id nie istnieje'})
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<number> {
+  @UseGuards(SimpleGuard)
+  @ApiBearerAuth()
+  @SimpleRole(SimpleRoleNames.ROOT)
+  async remove(@Param('id', ParseIntPipe) id: number, @SimplePayload() payload: SimplePayloadDto): Promise<number> {
 
     const contact = await this.storage.findOne(Contact, id);
-    
+    console.log(payload);
+    this.logger.log(`User ${payload.name} usuwa contact o id: ${id}`);
+
     if(!contact) {
       this.logger.warn(`Kontakt dla id ${id}`, '404 Not Found');
       throw new NotFoundException(`Kontakt dla id ${id} nie istnieje`);
