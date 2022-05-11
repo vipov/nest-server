@@ -16,6 +16,7 @@ describe('LoggerService', () => {
     expect(service).toBeDefined();
   });
 });
+<<<<<<< HEAD
 
 // import { Test, TestingModule } from '@nestjs/testing';
 // import { LoggerService } from './logger.service';
@@ -35,3 +36,5 @@ describe('LoggerService', () => {
 //     expect(service).toBeDefined();
 //   });
 // });
+=======
+>>>>>>> upstream/220509-nest

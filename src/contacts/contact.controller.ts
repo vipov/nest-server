@@ -73,10 +73,8 @@ export class ContactController {
   async create(@Body() data: CreateContactDto): Promise<Contact> {
     const existingEmail = await this.storage
       .findAll(Contact)
-      // .then((contacts) => contacts.find(contact.email === data.email));
-      .then((contacts) =>
-        contacts.find((contact) => contact.email === data.email),
-      );
+      .then((contacts) => contacts.find(contact.email === data.email));
+      .then((contacts) => contacts.find(contact.email === data.email));
     if (existingEmail) {
       throw new BadRequestException(`Email ${data.email} jest ddjuz zajety`);
     }

@@ -4,20 +4,32 @@ import { STORAGE_FILE } from './storage.tokens';
 
 @Injectable()
 export class StorageService implements OnModuleInit {
+<<<<<<< HEAD
   // private STORAGE_FILE = './storage/data.json';
 
   constructor(
+=======
+
+  data: { [key: string]: any[]; } = {};
+
+  constructor(
+
+>>>>>>> upstream/220509-nest
     @Inject(STORAGE_FILE)
     private STORAGE_FILE: string,
   ) {}
 
+<<<<<<< HEAD
   data: { [key: string]: any[] } = {};
 
+=======
+>>>>>>> upstream/220509-nest
   private async save() {
     await writeFile(this.STORAGE_FILE, JSON.stringify(this.data, null, 2));
   }
 
   async onModuleInit() {
+<<<<<<< HEAD
     await mkdir('./storage', { recursive: true });
     const dataFile = await stat(this.STORAGE_FILE).catch((e) => null);
     if (!dataFile) {
@@ -25,12 +37,22 @@ export class StorageService implements OnModuleInit {
     }
     const data = (await readFile(this.STORAGE_FILE)).toString();
     if (data) {
+=======
+    await mkdir('./storage', {recursive: true});
+    const dataFile = await stat(this.STORAGE_FILE).catch(e => null);
+    if(!dataFile) {
+      await writeFile(this.STORAGE_FILE, '{}');
+    }
+    const data = (await readFile(this.STORAGE_FILE)).toString();
+    if(data) {
+>>>>>>> upstream/220509-nest
       this.data = JSON.parse(data as any);
     }
   }
 
   async create<T>(cls: new () => T, data: Partial<T>): Promise<T> {
     const name = cls.name;
+<<<<<<< HEAD
     if (!this.data[name]) {
       this.data[name] = [];
     }
@@ -43,6 +65,20 @@ export class StorageService implements OnModuleInit {
       id,
       ...data,
     };
+=======
+    if(!this.data[name]) {
+      this.data[name] = [];
+    }
+    const ids = this.data[name].map(e => e.id);
+    if(!ids.length) {
+      ids.push(0);
+    }
+    const id = (Math.max(...ids))+1
+    const entity = {
+      id,
+      ...data,
+    }
+>>>>>>> upstream/220509-nest
     this.data[name].push(entity);
     await this.save();
     const inst = new cls();
@@ -52,7 +88,11 @@ export class StorageService implements OnModuleInit {
 
   async findAll<T>(cls: new () => T): Promise<T[]> {
     const name = cls.name;
+<<<<<<< HEAD
     return (this.data[name] || []).map((entity) => {
+=======
+    return (this.data[name] || []).map(entity => {
+>>>>>>> upstream/220509-nest
       const inst = new cls();
       Object.assign(inst, entity);
       return inst;
@@ -61,17 +101,26 @@ export class StorageService implements OnModuleInit {
 
   async findOne<T>(cls: new () => T, id: number): Promise<T | null> {
     const name = cls.name;
+<<<<<<< HEAD
     if (!this.data[name]) {
       return null;
     }
     const entity = this.data[name].find((e) => e.id === id);
     if (!entity) {
+=======
+    if(!this.data[name]) {
+      return null;
+    }
+    const entity = this.data[name].find(e => e.id === id);
+    if(!entity) {
+>>>>>>> upstream/220509-nest
       return null;
     }
     const inst = new cls();
     Object.assign(inst, entity);
     return inst;
   }
+<<<<<<< HEAD
   async update<T>(
     cls: new () => T,
     id: number,
@@ -84,6 +133,16 @@ export class StorageService implements OnModuleInit {
 
     const entity = this.data[name].find((e) => e.id === id);
     if (!entity) {
+=======
+  async update<T>(cls: new () => T, id: number, data: Partial<T>): Promise<T | null> {
+    const name = cls.name;
+    if(!this.data[name]) {
+      return null;
+    }
+
+    const entity = this.data[name].find(e => e.id === id);
+    if(!entity) {
+>>>>>>> upstream/220509-nest
       return null;
     }
     delete data['id'];
@@ -93,6 +152,7 @@ export class StorageService implements OnModuleInit {
     Object.assign(inst, entity);
     return inst;
   }
+<<<<<<< HEAD
   async remove<T>(cls: new () => T, id: number): Promise<number> {
     const name = cls.name;
     const row = await this.findOne(cls, id);
@@ -101,8 +161,23 @@ export class StorageService implements OnModuleInit {
     }
     if (this.data[name]) {
       this.data[name] = this.data[name].filter((e) => e.id !== id);
+=======
+
+  async remove<T>(cls: new () => T, id: number): Promise<number | null> {
+    const name = cls.name;
+    const row = await this.findOne(cls, id);
+    if(!row) {
+      return null;
+    }
+    if(this.data[name]) {
+      this.data[name] = this.data[name].filter(e => e.id !== id);
+>>>>>>> upstream/220509-nest
     }
     await this.save();
     return id;
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/220509-nest
 }
