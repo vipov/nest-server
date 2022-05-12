@@ -6,6 +6,8 @@ import { AuthService } from './services/auth.service';
 import { ConfigModule, ConfigService } from '../config';
 import { StorageModule } from '../storage/storage.module';
 import { JwtModule } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Role, User } from './entities/user.entity';
 
 @Module({
   imports: [
@@ -19,6 +21,7 @@ import { JwtModule } from '@nestjs/jwt';
         signOptions: { expiresIn: '4d'}
       }),
     }),
+    TypeOrmModule.forFeature([User, Role])
   ],
   controllers: [AuthController, UsersController],
   providers: [UsersService, AuthService],
