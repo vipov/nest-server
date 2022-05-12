@@ -4,16 +4,19 @@ import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(private storage: StorageService) {}
 
+  constructor(
+    private storage: StorageService,
+  ) {}
+  
   async create(createUserDto: Partial<User>): Promise<User> {
-    return this.storage.create(User, createUserDto);
+    return this.storage.create(User, createUserDto)
   }
 
   async findBy(query: Partial<User>): Promise<User[]> {
-    return this.storage
-      .findAll(User)
-      .then((users) => users.filter((user) => user.email === query.email));
+    return this.storage.findAll(User).then(
+      users => users.filter(user => user.email === query.email)
+    )
   }
 
   async findOne(id: number): Promise<User | null> {

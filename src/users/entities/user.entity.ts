@@ -17,6 +17,7 @@ export class User {
 }
 
 export class TokenPayload {
+  username: string;
   sub: number;
 }
 

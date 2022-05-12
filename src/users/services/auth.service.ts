@@ -6,17 +6,22 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
+
   constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
+    private usersService: UsersService, 
+    private jwtService: JwtService
   ) {}
 
   async validateUser(email: string, password: string): Promise<User | null> {
-    const [user] = await this.usersService.findBy({ email });
-    if (!user) {
+
+    const [user] = await this.usersService.findBy({email});
+
+    if(!user) {
       return null;
     }
+
     const isValid = await this.validatePassword(password, user.password);
+
     return isValid ? user : null;
   }
 
@@ -29,13 +34,18 @@ export class AuthService {
   }
 
   async encodeUserToken(user: User): Promise<string> {
-    const payload: TokenPayload = { sub: user.id };
+
+    const payload: TokenPayload = { sub: user.id, username: user.email };
+
     return this.jwtService.signAsync(payload);
   }
 
   async decodeUserToken(token: string): Promise<RequestPayload> {
+    
     const payload: TokenPayload = await this.jwtService.verifyAsync(token);
+
     const user = await this.usersService.findOne(payload.sub);
+
     return user ? { user } : null;
   }
 }
