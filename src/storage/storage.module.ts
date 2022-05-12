@@ -12,16 +12,15 @@ import { STORAGE_FILE } from './storage.tokens';
       provide: StorageService,
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
-
         const file = resolve(config.STORAGE_DIR, 'data.json');
-        
+
         return new StorageService(file);
-      }
+      },
     },
     {
       provide: STORAGE_FILE,
-      useValue: './storage/data.json'
-    }
+      useValue: './storage/data.json',
+    },
   ],
   exports: [StorageService],
 })

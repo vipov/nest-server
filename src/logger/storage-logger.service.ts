@@ -5,17 +5,14 @@ import { LoggerService } from './logger.service';
 
 @Injectable()
 export class StorageLoggerService extends LoggerService {
-
-  constructor(
-    private storage: StorageService,
-  ) {
+  constructor(private storage: StorageService) {
     super();
   }
 
   warn(message: any, context?: any, ...rest: any[]): void {
-      this.storage.create(Log, {type: 'warn', message, context, rest})
+    this.storage.create(Log, { type: 'warn', message, context, rest });
   }
   log(message: any, context?: any, ...rest: any[]): void {
-      this.storage.create(Log, {type: 'log', message, context, rest})
+    this.storage.create(Log, { type: 'log', message, context, rest });
   }
 }
