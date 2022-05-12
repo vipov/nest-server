@@ -7,11 +7,13 @@ import {
   SwaggerDocumentOptions,
   SwaggerCustomOptions,
 } from '@nestjs/swagger';
-import { ConfigService } from './config/config.service';
+import { ConfigService } from './config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const config = app.get(ConfigService)
+
+  const config = app.get(ConfigService);
+
   // SWAGGER SETUP
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Mój Projekt w Nest')

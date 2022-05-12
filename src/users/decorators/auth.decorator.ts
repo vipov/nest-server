@@ -5,6 +5,6 @@ export const SimplePayload = createParamDecorator(
   (data: unknown, context: ExecutionContext) => {
     const req: Request = context.switchToHttp().getRequest();
 
-    return req.simplePayload;
+    return req.payload ? req.payload.user : null;
   },
 );
