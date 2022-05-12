@@ -8,6 +8,8 @@ import { StorageModule } from '../storage/storage.module';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role, User } from './entities/user.entity';
+import { UsersAdminController } from './users-admin/users-admin.controller';
+import { UserRepository } from './repositories/user.repository';
 
 @Module({
   imports: [
@@ -21,9 +23,9 @@ import { Role, User } from './entities/user.entity';
         signOptions: { expiresIn: '4d'}
       }),
     }),
-    TypeOrmModule.forFeature([User, Role])
+    TypeOrmModule.forFeature([User, Role, UserRepository])
   ],
-  controllers: [AuthController, UsersController],
+  controllers: [AuthController, UsersController, UsersAdminController],
   providers: [UsersService, AuthService],
 })
 export class UsersModule {}
