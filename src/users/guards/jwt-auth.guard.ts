@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { ROLES_KEY } from '../decorators/roles.decorator';
@@ -19,13 +19,13 @@ export class JwtAuthGuard implements CanActivate {
     const token = this.extractToken(req);
 
     if(!token) {
-      return false;
+      throw new UnauthorizedException('Brak tokenu autoryzacyjnego');
     }
 
     const payload = await this.decodeUser(token);
 
     if(!payload) {
-      return false;
+      throw new UnauthorizedException('Niepoprawny token autoryzacyjny');
     }
 
     req.payload = payload;
