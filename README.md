@@ -80,7 +80,7 @@ Nest is [MIT licensed](LICENSE).
 	# switch to branch with final project
 	git checkout 220509-nest
 
-		# albo to repo&branch 
+		# or use this repo&branch - it's the same 
 		git clone https://github.com/vipov/nest-server 
 		git checkout final
 
@@ -95,8 +95,8 @@ Nest is [MIT licensed](LICENSE).
 	# dodac env
 	npm i
 
-	# ewentualnie dodac   "sqlite.sqlite3": "/usr/bin/sqlite3" do settings.json
-	# generate migrations (database)
+	# ewentualnie dodac "sqlite.sqlite3": "/usr/bin/sqlite3" do settings.json
+	# generate migrations (refresh database with icon to see changes)
 	npm run migration:run
 
 	# start
