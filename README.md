@@ -71,3 +71,31 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+
+# download & run
+	# clone repo
+	git clone https://github.com/myflowpl/nest-server.git
+	
+	# switch to branch with final project
+	git checkout 220509-nest
+	
+	# switch to own branch (with code copied from final version)
+	git checkout -b moja-nazwa-brancha
+	
+	# instalacje
+	npm install -g @nestjs/cli
+	npm install @nestjs/swagger swagger-ui-express
+	nvm use 16.15.0 ( albo nvm alias default 16.15.0 )
+	
+	# dodac env
+	npm i
+
+	# ewentualnie dodac   "sqlite.sqlite3": "/usr/bin/sqlite3" do settings.json
+	# generate migrations (database)
+	npm run migration:run
+
+	# start
+	npm run start:dev
+
+	# documentation - https://get.myflow.pl/nest/class/#/
