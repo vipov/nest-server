@@ -76,10 +76,14 @@ Nest is [MIT licensed](LICENSE).
 # download & run
 	# clone repo
 	git clone https://github.com/myflowpl/nest-server.git
-	
+
 	# switch to branch with final project
 	git checkout 220509-nest
-	
+
+		# albo to repo&branch 
+		git clone https://github.com/vipov/nest-server 
+		git checkout final
+
 	# switch to own branch (with code copied from final version)
 	git checkout -b moja-nazwa-brancha
 	
